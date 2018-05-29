@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-#
-# MIT license; Copyright (C) 2018
 
 """Create a directory tree from an unordered tab-indented directory list (TOC)"""
 

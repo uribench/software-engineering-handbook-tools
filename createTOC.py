@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-#
-# MIT license; Copyright (C) 2018
 
 """Traverse a directory tree and generate an ordered linked validated TOC.
 
