@@ -7,23 +7,15 @@ A collection of automation scripts to build and maintain the [Software Engineeri
 The [Software Engineering Handbook][1] has the following structure and conventions:
 
 ```
-Repository Root/                        https://github.com/uribench/software-engineering-handbook
-|
-|----Handbook/                          Root of the automatically generated handbook hierarchy
-|
-|----Guides/                            Collection of guides to be consumed by the handbook            
-|
-|----Topics/                            Collection of canonical topics
-|
-|----config/                            Root of configuration files for the handbook
-|    |
-|    |----navigation/                   Navigation related configuration files for the handbook
-|
-|----images/                            Collection of images for the handbook
-|
-|----_config.yml                        Required by GitHub Pages
-|
-|----README.md                          Main readme file for the handbook (the starting point)
+Repository Root/                      https://github.com/uribench/software-engineering-handbook
+├──Handbook/                          Root of the automatically generated handbook hierarchy
+├──Guides/                            Collection of guides to be consumed by the handbook            
+├──Topics/                            Collection of canonical topics
+├──config/                            Root of configuration files for the handbook
+|    └──navigation/                   Navigation related configuration files for the handbook
+├──images/                            Collection of images for the handbook
+├──_config.yml                        Required by GitHub Pages
+└──README.md                          Main readme file for the handbook (the starting point)
 ```
 
 The Handbook directory hierarchy represents an instance of a handbook, which is created 
