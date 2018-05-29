@@ -12,7 +12,7 @@ Repository Root/                      https://github.com/uribench/software-engin
 ├──Guides/                            Collection of guides to be consumed by the handbook            
 ├──Topics/                            Collection of canonical topics
 ├──config/                            Root of configuration files for the handbook
-|    └──navigation/                   Navigation related configuration files for the handbook
+|  └──navigation/                     Navigation related configuration files for the handbook
 ├──images/                            Collection of images for the handbook
 ├──_config.yml                        Required by GitHub Pages
 └──README.md                          Main readme file for the handbook (the starting point)

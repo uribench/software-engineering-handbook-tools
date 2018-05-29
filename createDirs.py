@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #
-# MIT license; Copyright (C) 2018 Uri Benchetrit
+# MIT license; Copyright (C) 2018
 
 """Create a directory tree from an unordered tab-indented directory list (TOC)"""
 
 import os
 import sys
 
-dirsTreeRoot = '../Training/'   # relative to 'Tools/' directory
+dirsTreeRoot = '../Handbook/'   # relative to 'Tools/' directory
 tocPath = '../'                 # relative to 'Tools/' directory
 tocFile = 'Curriculum.md'       # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
 dirOrderFile = '.dirorder'
