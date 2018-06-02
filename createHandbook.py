@@ -25,13 +25,24 @@ metadataPath = 'config/metadata/'  # optional YAML files with custom content for
 
 def createNextLevel(path, children):
     """"""
-    pass
+    if type(children) is not list:
+        print('Error: list was expected and received a {} instead: {}'.format(type(children), children))
+        sys.exit()
+
+    for dir in children:
+        if type(dir) is dict:
+            for key, value in dir.items():
+                path = os.path.join(path, key)
+                print('Non-Leaf directory: {}, path: {}'.format(key, path))
+                createNextLevel(path, value)
+        else:
+            path = os.path.join(path, dir)
+            print('Leaf directory: {}, path: {}'.format(dir, path))
 
 def processArgs():
     global verbose, siteRoot
 
     args = docopt(__doc__)
-
     # print(args)
 
     verbose = args['--verbose']
@@ -48,9 +59,10 @@ def main():
     try:
         with open(rootConfigFullFileName, 'r') as fp:
             navigation = yaml.load(fp)
-            print(navigation[2])
+            # print(navigation)
 
-            # createNextLevel(fp)
+            path = os.path.join(siteRoot, handbookPath)
+            createNextLevel(path, navigation)
     except IOError as e:
         print('Error: Operation failed: {}'.format(e.strerror))
 
