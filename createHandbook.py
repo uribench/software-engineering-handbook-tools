@@ -18,9 +18,9 @@ from urllib.request import pathname2url
 from docopt import docopt
 
 
-handbookPath = 'Handbook/'         # head of the handbook (relative to site root)
+handbookPath = 'HandbookTest/'     # head of the handbook (relative to site root)
 configPath = 'config/navigation/'  # one or more YAML navigation configuration files
-rootConfigFile = 'root.yml'         # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
+rootConfigFile = 'root.yml'        # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
 metadataPath = 'config/metadata/'  # optional YAML files with custom content for the README.md files
 
 def createNextLevel(path, children):
@@ -32,12 +32,14 @@ def createNextLevel(path, children):
     for dir in children:
         if type(dir) is dict:
             for key, value in dir.items():
-                path = os.path.join(path, key)
-                print('Non-Leaf directory: {}, path: {}'.format(key, path))
-                createNextLevel(path, value)
+                dirPath = os.path.join(path, key)
+                print('Non-Leaf directory: {}, path: {}'.format(key, dirPath))
+                os.mkdir(dirPath)
+                createNextLevel(dirPath, value)
         else:
-            path = os.path.join(path, dir)
-            print('Leaf directory: {}, path: {}'.format(dir, path))
+            dirPath = os.path.join(path, dir)
+            print('Leaf directory: {}, path: {}'.format(dir, dirPath))
+            os.mkdir(dirPath)
 
 def processArgs():
     global verbose, siteRoot
