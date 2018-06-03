@@ -1,0 +1,9 @@
+# {{title}}
+
+{% if children is defined and children -%}
+## Content
+
+{% for c in children -%}
+- {{c}}
+{% endfor -%}
+{% endif -%}

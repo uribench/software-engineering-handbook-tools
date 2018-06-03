@@ -15,9 +15,9 @@ import os
 import sys
 import yaml
 import re
-from urllib.request import pathname2url
 from docopt import docopt
-
+from urllib.request import pathname2url
+from jinja2 import Template
 
 handbookPath = 'Handbook/'          # head of the handbook (relative to site root)
 configPath = 'config/navigation/'   # one or more YAML navigation configuration files
@@ -45,7 +45,7 @@ def createNextLevel(path, nextLevels):
             # topLevel is a string representing a 'leaf directory' (having no children)
             createCurrentLevel(path, topLevel)
 
-def createCurrentLevel(path, navigationNode, children=None):
+def createCurrentLevel(path, navigationNode, children=[]):
     dirName, metadataFileName = parseNavigationNode(navigationNode)
     dirPath = os.path.join(path, dirName)
     createDir(dirPath)
@@ -99,23 +99,56 @@ def createDir(path):
 
     os.mkdir(path)
 
-def createIndexFile(path, parentDirName, siblingDirNames, metadataFileName):
+def createIndexFile(path, parentDirName, children, metadataFileName):
     print('Index File:')
     print('\t path: {}'.format(path))
     print('\t parentDirName: {}'.format(parentDirName))
-    print('\t siblingDirNames: {}'.format(siblingDirNames))
+    print('\t children: {}'.format(children))
     print('\t metadataFileName: {}'.format(metadataFileName))
 
-    metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
-    if os.path.exists(metadataFullFileName):
-        createCustomIndexFile(path, parentDirName, siblingDirNames, metadataFullFileName)
-    else:
-        createDefaultIndexFile(path, parentDirName, siblingDirNames)
+    childrenWithLinks = childrenToNavigationItems(path, children)
 
-def createCustomIndexFile(path, parentDirName, siblingDirNames, metadataFullFileName):
+    template = loadTemplate('.', 'index_template.j2')
+    indexFileContent = template.render(title=parentDirName, children=childrenWithLinks)
+    writeIndexFile(path, indexFileContent)
+
+    # metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
+    # if os.path.exists(metadataFullFileName):
+    #     createCustomIndexFile(path, parentDirName, children, metadataFullFileName)
+    # else:
+    #     createDefaultIndexFile(path, parentDirName, children)
+
+def childrenToNavigationItems(path, children):
+    navigationItems = []
+    for child in children:
+        path = path.replace(siteRoot, '')
+        link = os.path.join(path, child)
+        linkURL = pathname2url(link)
+        item = '[{}]({})'.format(child, linkURL)
+        navigationItems.append(item)
+
+    return navigationItems
+
+def loadTemplate(templatePath, templateName):
+    try:
+        templateFullFileName = os.path.join(templatePath, templateName)
+        with open(templateFullFileName) as templateFile:
+            return Template(templateFile.read())
+    except IOError as e:
+        print('Error: operation failed: {}'.format(e.strerror))
+
+def writeIndexFile(path, content):
+    indexFullFileName = os.path.join(path, 'index.md')
+    try:
+        with open(indexFullFileName, 'a') as fo:
+            fo.write(content)
+    except IOError as e:
+        print('Error: Operation failed: {}'.format(e.strerror))
+
+def createCustomIndexFile(path, parentDirName, children, metadataFullFileName):
     pass
 
-def createDefaultIndexFile(path, parentDirName, siblingDirNames):
+def createDefaultIndexFile(path, parentDirName, children):
     pass
 
 def processArgs():
