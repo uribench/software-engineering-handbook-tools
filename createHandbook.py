@@ -43,11 +43,11 @@ def buildTree(path, tree):
     """
 
     rootNode, rootChildrenTrees = getRootNodeAndChildrenTrees(tree)
-    rootChildrenNames = forestToRootNames(rootChildrenTrees)
+    rootChildrenNodes = forestToRootNodes(rootChildrenTrees)
     rootName, rootOptions = parseNode(rootNode)
     rootPath = os.path.join(path, rootName)
     createRootDir(rootPath)
-    createIndexFile(rootPath, rootName, rootOptions, rootChildrenNames)
+    createIndexFile(rootPath, rootName, rootOptions, rootChildrenNodes)
 
     # continue building the navigation tree recursively
     for childTree in rootChildrenTrees:
@@ -167,15 +167,15 @@ def createRootDir(path):
 
     os.mkdir(path)
 
-def createIndexFile(path, title, options, children):
+def createIndexFile(path, title, options, childrenNodes):
     # prepare values for the index template
     metadataFileName = options['id'] + metadataFileExtension
     metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
     if os.path.exists(metadataFullFileName):
         # replace with content loaded from the metadata file
-        contents = formatContents(path, children)
+        contents = formatContents(path, childrenNodes)
     else:
-        contents = formatContents(path, children)
+        contents = formatContents(path, childrenNodes)
 
     template = loadTemplate('.', 'index_template.j2')
     indexFileContent = template.render(title=title, contents=contents)
@@ -189,13 +189,18 @@ def loadTemplate(templatePath, templateName):
     except IOError as e:
         print('Error: operation failed: {}'.format(e.strerror))
 
-def formatContents(path, children):
+def formatContents(path, childrenNodes):
     contents = []
-    for child in children:
-        path = path.replace(siteRoot, '')
-        link = os.path.join(path, child)
-        linkURL = pathname2url(link)
-        item = '[{}]({})'.format(child, linkURL)
+    for childNode in childrenNodes:
+        childName, childOptions = parseNode(childNode)
+        if not childOptions['stop']:
+            path = path.replace(siteRoot, '')
+            link = os.path.join(path, childName)
+            linkURL = pathname2url(link)
+            item = '[{}]({})'.format(childName, linkURL)
+        else:
+            item = childName
+            
         contents.append(item)
 
     return contents
