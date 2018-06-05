@@ -1,5 +1,9 @@
 # {{title}}
 
+{% if intro is defined and intro -%}
+{{intro}}
+{% endif -%}
+
 {% if contents is defined and contents -%}
 ## Contents
 

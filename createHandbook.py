@@ -168,17 +168,20 @@ def createRootDir(path):
     os.mkdir(path)
 
 def createIndexFile(path, title, options, childrenNodes):
-    # prepare values for the index template
+    template = loadTemplate('.', 'index_template.j2')
+
     metadataFileName = options['id'] + metadataFileExtension
     metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
+
     if os.path.exists(metadataFullFileName):
-        # replace with content loaded from the metadata file
-        contents = formatContents(path, childrenNodes)
+        metadata = loadMetadata(metadataFullFileName)
+        intro = metadata['intro']
+        guides = metadata['guides']
+        indexFileContent = template.render(title=title, intro=intro, guides=guides)
     else:
         contents = formatContents(path, childrenNodes)
-
-    template = loadTemplate('.', 'index_template.j2')
-    indexFileContent = template.render(title=title, contents=contents)
+        indexFileContent = template.render(title=title, contents=contents)
+        
     writeIndexFile(path, indexFileContent)
 
 def loadTemplate(templatePath, templateName):
@@ -213,15 +216,14 @@ def writeIndexFile(path, content):
     except IOError as e:
         print('Error: Operation failed: {}'.format(e.strerror))
 
-# def loadMetadata():
-#     try:
-#         with open(rootConfigFullFileName, 'r') as fp:
-#             navigation = yaml.load(fp)
-#             print(navigation)
-#             path = os.path.join(siteRoot, handbookPath)
-#             createNextLevel(path, navigation)
-#     except IOError as e:
-#         print('Error: operation failed: {}'.format(e.strerror))
+def loadMetadata(filename):
+    try:
+        with open(filename, 'r') as fp:
+            metadata = yaml.load(fp)
+    except IOError as e:
+        print('Error: operation failed: {}'.format(e.strerror))
+
+    return metadata
 
 def processArgs():
     global verbose, siteRoot
