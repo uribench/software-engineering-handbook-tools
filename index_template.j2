@@ -1,9 +1,17 @@
 # {{title}}
 
-{% if children is defined and children -%}
-## Content
+{% if contents is defined and contents -%}
+## Contents
 
-{% for c in children -%}
+{% for c in contents -%}
 - {{c}}
+{% endfor -%}
+{% endif -%}
+
+{% if guides is defined and guides -%}
+## Guides
+
+{% for g in guides -%}
+- {{g}}
 {% endfor -%}
 {% endif -%}

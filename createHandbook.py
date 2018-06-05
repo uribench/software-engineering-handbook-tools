@@ -19,115 +19,156 @@ from docopt import docopt
 from urllib.request import pathname2url
 from jinja2 import Template
 
-handbookPath = 'Handbook/'          # head of the handbook (relative to site root)
 configPath = 'config/navigation/'   # one or more YAML navigation configuration files
 rootConfigFile = 'root.yml'         # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
 metadataPath = 'config/metadata/'   # optional YAML files with custom content for the README.md files
-metadataCustomFilePrefix = '@'
 metadataFileExtension = '.yml'
 
-def createNextLevel(path, nextLevels):
-    """"""
-    if type(nextLevels) is not list:
-        print('Error: expected list, received {} instead: {}'.format(type(nextLevels), nextLevels))
-        sys.exit()
+def buildTree(path, tree):
+    """
+    Builds the navigation tree recursively, based on the provided tree
 
-    for topLevel in nextLevels:
-        if type(topLevel) is dict:
-            # topLevel is a one-item dictionary representing a 'Non-leaf directory' (having children)
-            navigationNode = list(topLevel.keys())[0]
-            navigationNodeNextLevels = list(topLevel.values())[0]
-            children = nextLevelsToChildren(navigationNodeNextLevels)
+    :param path: points to the location where the 'root directory' will be created for the provided 
+        tree.
+    :type path: string
+    :param tree: nested data structure representing the navigation tree from path onward with two
+        possibilities:
+        1. one-item dictionary representing a 'non-leaf directory' (having children):
+            - the 'key' is a string (root name followed by optional arguments)
+            - the 'value' is a list of root's children trees
+        2. string representing a 'leaf directory' (having no children):
+            - root name followed by optional arguments
+        For more information and examples see: config/navigation/README.md
+    :type tree: dictionary or string
+    """
 
-            dirPath = createCurrentLevel(path, navigationNode, children)
-            createNextLevel(dirPath, navigationNodeNextLevels)
-        else:
-            # topLevel is a string representing a 'leaf directory' (having no children)
-            createCurrentLevel(path, topLevel)
+    rootNode, rootChildrenTrees = getRootNodeAndChildrenTrees(tree)
+    rootChildrenNames = forestToRootNames(rootChildrenTrees)
+    rootName, rootOptions = parseNode(rootNode)
+    rootPath = os.path.join(path, rootName)
+    createRootDir(rootPath)
+    createIndexFile(rootPath, rootName, rootOptions, rootChildrenNames)
 
-def createCurrentLevel(path, navigationNode, children=[]):
-    dirName, metadataFileName = parseNavigationNode(navigationNode)
-    dirPath = os.path.join(path, dirName)
-    createDir(dirPath)
-    createIndexFile(dirPath, dirName, children, metadataFileName)
+    # continue building the navigation tree recursively
+    for childTree in rootChildrenTrees:
+        buildTree(rootPath, childTree)
 
-    return dirPath
+def getRootNodeAndChildrenTrees(tree):
 
-def parseNavigationNode(node):
-    nodeParts = node.split(metadataCustomFilePrefix)
-    # remove trailing and leading spaces while preserving internal spaces
-    dirName = nodeParts[0].strip()
-    if len(nodeParts) == 1:
-        metadataFileName = dirName
-    elif len(nodeParts) == 2:
-        metadataFileName = nodeParts[1].strip()
+    if type(tree) is dict:
+        # tree here is a one-item dictionary representing a 'non-leaf directory' (having children):
+        #   - the 'key' is a string (root name followed by optional arguments)
+        #   - the 'value' is a list of root's children trees
+        rootNode, rootChildrenTrees = list(tree.items())[0]
     else:
-        print('Error: navigation node syntax error: {}'.format(node))
-        sys.exit()
+        # tree here is a string representing a 'leaf directory' (having no children):
+        #   - root name followed by optional arguments
+        rootNode = tree
+        rootChildrenTrees = []
 
-    metadataFileName = formatFileName(metadataFileName)
-    metadataFileName += metadataFileExtension
+    return rootNode, rootChildrenTrees
 
-    return dirName, metadataFileName
+def getHandbookName(tree):
+    rootNode, rootChildrenTrees = getRootNodeAndChildrenTrees(tree)
+    nodeName, nodeTags = splitNodeNameAndTags(rootNode)
 
-def formatFileName(fileName):
-    validCharsRegEx = r'[^\w\-. ()]+'
-    # compile the regular expression
-    r = re.compile(validCharsRegEx)
-    # remove invalid characters
-    fileName = r.sub('', fileName)
-    # additional formatting
-    fileName = re.sub(' ', '_', fileName)
-    fileName = fileName.lower()
+    return nodeName
 
-    return fileName
-
-def nextLevelsToChildren(nextLevels):
-    children = []
-    for child in nextLevels:
-        if type(child) is dict:
-            children.append(list(child.keys())[0])
+def forestToRootNames(forest):
+    rootNodes = []
+    for tree in forest:
+        if type(tree) is dict:
+            rootNodes.append(list(tree.keys())[0])
         else:
-            children.append(child)
+            rootNodes.append(tree)
 
-    return children
+    rootNames = []
+    for node in rootNodes:
+        nodeName, nodeTags = splitNodeNameAndTags(node)
+        rootNames.append(nodeName)
 
-def createDir(path):
+    return rootNames
+
+def parseNode(node):
+    """
+    Parses a navigation node string and returns its parts
+
+    :param node: A navigation node including a directory name ('Humanized' style) followed by 
+        optional space separated arguments as tags, each with the following syntax: @<key>[=<value>]
+    :type node: String
+    :return: nodeName, nodeTags
+    :rtype: string, string
+    """
+
+    nodeName, nodeTags = splitNodeNameAndTags(node)
+    nodeOptions = getNodeOptions(nodeTags, nodeName)
+
+    return nodeName, nodeOptions
+
+def splitNodeNameAndTags(node):
+    r = re.compile(r'^(?P<name>[^@]+)(?P<tags>.*)$')
+    m = r.match(node)
+    nodeName = m.group('name').strip()
+    nodeTags = m.group('tags').strip().split(' ')
+
+    return nodeName, nodeTags
+
+def getNodeOptions(tags, name):
+    # parse explicit arguments
+    validKeys = ['id', 'include', 'stop']
+    nodeOptions = {}
+    r = re.compile(r'@(?P<k>[a-z]+)=?(?P<v>.*)')
+    for tag in tags:
+        m = r.match(tag)
+        if m is None:
+            continue
+        if m.group('k') in validKeys:
+            nodeOptions.update({m.group('k') : m.group('v')})
+        else:
+            print('Error: Unknown argument: {}'.format(m.group('k')))
+            sys.exit()
+    
+    # set defaults
+    nodeOptions['stop'] = True if 'stop' in nodeOptions else False
+    if 'id' not in nodeOptions or nodeOptions['id'] == '':
+        nodeOptions['id'] = nodeNameToNodeID(name)
+    if 'include' in nodeOptions and nodeOptions['include'] == '':
+        nodeOptions['include'] = nodeNameToNodeID(name)
+
+    return nodeOptions
+
+def nodeNameToNodeID(nodeName):
+    # remove invalid characters
+    validCharsRegEx = r'[^\w\-. ()]+'
+    r = re.compile(validCharsRegEx)
+    name = r.sub('', nodeName)
+
+    # additional formatting
+    name = re.sub(' ', '-', name)
+    name = re.sub('-+', '-', name)
+    id = name.lower()
+
+    return id
+
+def createRootDir(path):
     if os.path.exists(path):
-        print('Error: at least one of the target directories already exists: {}'.format(path))
+        print('Error: target directory already exists: {}'.format(path))
         sys.exit()
 
     os.mkdir(path)
 
-def createIndexFile(path, parentDirName, children, metadataFileName):
-    print('Index File:')
-    print('\t path: {}'.format(path))
-    print('\t parentDirName: {}'.format(parentDirName))
-    print('\t children: {}'.format(children))
-    print('\t metadataFileName: {}'.format(metadataFileName))
-
-    childrenWithLinks = childrenToNavigationItems(path, children)
+def createIndexFile(path, title, options, children):
+    # prepare values for the index template
+    metadataFileName = options['id'] + metadataFileExtension
+    metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
+    if os.path.exists(metadataFullFileName):
+        pass
+    else:
+        contents = formatContents(path, children)
 
     template = loadTemplate('.', 'index_template.j2')
-    indexFileContent = template.render(title=parentDirName, children=childrenWithLinks)
+    indexFileContent = template.render(title=title, contents=contents)
     writeIndexFile(path, indexFileContent)
-
-    # metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
-    # if os.path.exists(metadataFullFileName):
-    #     createCustomIndexFile(path, parentDirName, children, metadataFullFileName)
-    # else:
-    #     createDefaultIndexFile(path, parentDirName, children)
-
-def childrenToNavigationItems(path, children):
-    navigationItems = []
-    for child in children:
-        path = path.replace(siteRoot, '')
-        link = os.path.join(path, child)
-        linkURL = pathname2url(link)
-        item = '[{}]({})'.format(child, linkURL)
-        navigationItems.append(item)
-
-    return navigationItems
 
 def loadTemplate(templatePath, templateName):
     try:
@@ -137,6 +178,17 @@ def loadTemplate(templatePath, templateName):
     except IOError as e:
         print('Error: operation failed: {}'.format(e.strerror))
 
+def formatContents(path, children):
+    contents = []
+    for child in children:
+        path = path.replace(siteRoot, '')
+        link = os.path.join(path, child)
+        linkURL = pathname2url(link)
+        item = '[{}]({})'.format(child, linkURL)
+        contents.append(item)
+
+    return contents
+
 def writeIndexFile(path, content):
     indexFullFileName = os.path.join(path, 'index.md')
     try:
@@ -145,36 +197,37 @@ def writeIndexFile(path, content):
     except IOError as e:
         print('Error: Operation failed: {}'.format(e.strerror))
 
-def createCustomIndexFile(path, parentDirName, children, metadataFullFileName):
-    pass
-
-def createDefaultIndexFile(path, parentDirName, children):
-    pass
+# def loadMetadata():
+#     try:
+#         with open(rootConfigFullFileName, 'r') as fp:
+#             navigation = yaml.load(fp)
+#             print(navigation)
+#             path = os.path.join(siteRoot, handbookPath)
+#             createNextLevel(path, navigation)
+#     except IOError as e:
+#         print('Error: operation failed: {}'.format(e.strerror))
 
 def processArgs():
     global verbose, siteRoot
 
     args = docopt(__doc__)
-    # print(args)
-
     verbose = args['--verbose']
     siteRoot = args['--root']
 
 def main():
+    global handbookPath
+
     rootConfigFullFileName = os.path.join(siteRoot, *[configPath, rootConfigFile])
 
     if not os.path.exists(rootConfigFullFileName):
         print('Error: root config file <{}> does not exist'.format(rootConfigFullFileName))
         sys.exit()
 
-
     try:
         with open(rootConfigFullFileName, 'r') as fp:
-            navigation = yaml.load(fp)
-            print(navigation)
-
-            path = os.path.join(siteRoot, handbookPath)
-            createNextLevel(path, navigation)
+            navigationTree = yaml.load(fp)
+            handbookPath = getHandbookName(navigationTree) + '/'
+            buildTree(siteRoot, navigationTree)
     except IOError as e:
         print('Error: operation failed: {}'.format(e.strerror))
 
