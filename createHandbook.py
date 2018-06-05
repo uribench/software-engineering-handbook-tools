@@ -74,13 +74,23 @@ def getHandbookName(tree):
 
     return nodeName
 
-def forestToRootNames(forest):
+def forestToRootNodes(forest):
+    """Returns the root nodes of all the trees in forest"""
+
     rootNodes = []
     for tree in forest:
         if type(tree) is dict:
             rootNodes.append(list(tree.keys())[0])
         else:
             rootNodes.append(tree)
+
+    # root node is root name followed by optional arguments
+    return rootNodes
+
+def forestToRootNames(forest):
+    """Returns the root names of all the trees in forest"""
+
+    rootNodes = forestToRootNodes(forest)
 
     rootNames = []
     for node in rootNodes:
@@ -162,7 +172,8 @@ def createIndexFile(path, title, options, children):
     metadataFileName = options['id'] + metadataFileExtension
     metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
     if os.path.exists(metadataFullFileName):
-        pass
+        # replace with content loaded from the metadata file
+        contents = formatContents(path, children)
     else:
         contents = formatContents(path, children)
 

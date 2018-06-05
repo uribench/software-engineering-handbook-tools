@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """Traverse a directory tree and generate an ordered linked validated TOC.
 
@@ -11,9 +11,11 @@ Arguments:
 Options:
   -h --help             show this help message and exit
   -v --verbose          print warning messages
-  --dirs-root=PATH      directories tree root relative to program location [default: ../Handbook/] 
-  --toc-path=PATH       TOC file path relative to program location [default: ../]
-  --links-root=PATH     TOC file links root relative to TOC file location [default: ./Handbook/]
+  --dirs-root=PATH      directories tree root relative to program location
+                        [default: ../software-engineering-handbook/Handbook/] 
+  --toc-path=PATH       TOC file path relative to program location
+                        [default: ../software-engineering-handbook/]
+  --links-root=PATH     TOC file links root relative to TOC file location [default: /Handbook/]
   -d --depth=LEVEL      max depth of the generated TOC tree [default: 8]
   --start-index=INDEX   start index of the TOC items [default: 1]
   --no-item-prefix      do not include item prefix for the TOC items
