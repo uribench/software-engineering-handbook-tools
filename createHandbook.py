@@ -23,6 +23,8 @@ configPath = 'config/navigation/'   # one or more YAML navigation configuration 
 rootConfigFile = 'root.yml'         # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
 metadataPath = 'config/metadata/'   # optional YAML files with custom content for the README.md files
 metadataFileExtension = '.yml'
+indexTemplatePath = '.'
+indexTemplate = 'index-template.j2'
 
 def buildTree(path, tree):
     """
@@ -168,30 +170,26 @@ def createRootDir(path):
     os.mkdir(path)
 
 def createIndexFile(path, options, title, childrenNodes):
-    template = loadTemplate('.', 'index_template.j2')
+    template = loadTemplate(indexTemplatePath, indexTemplate)
     metadataFileName = options['id'] + metadataFileExtension
     metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
 
+    intro = []
+    rawGuides = []
+    rawTopics = []
+
     if os.path.exists(metadataFullFileName):
-        indexFileContents = createCustomIndexFileContents(path, template, title, metadataFullFileName)
-    else:
-        indexFileContents = createDefaultIndexFileContents(path, template, title, childrenNodes)
+        metadata = loadMetadata(metadataFullFileName)
+        intro = metadata.get('intro', [])
+        rawGuides = metadata.get('guides', [])
+        rawTopics = metadata.get('topics', [])
 
-    writeIndexFile(path, indexFileContents)
-
-def createCustomIndexFileContents(path, template, title, metadataFullFileName):
-    metadata = loadMetadata(metadataFullFileName)
-    intro = metadata['intro']
-    guides = metadata['guides']
-    indexFileContents = template.render(title=title, intro=intro, guides=guides)
-
-    return indexFileContents
-
-def createDefaultIndexFileContents(path, template, title, childrenNodes):
     contents = formatContents(path, childrenNodes)
-    indexFileContents = template.render(title=title, contents=contents)
+    guides = formatMetadataListItems('/Guides', rawGuides)
+    topics = formatMetadataListItems('/Topics', rawTopics)
 
-    return indexFileContents
+    indexFileContents = template.render(title=title, intro=intro, contents=contents, guides=guides, topics=topics)
+    writeIndexFile(path, indexFileContents)
 
 def loadTemplate(templatePath, templateName):
     try:
@@ -201,30 +199,6 @@ def loadTemplate(templatePath, templateName):
     except IOError as e:
         print('Error: operation failed: {}'.format(e.strerror))
 
-def formatContents(path, childrenNodes):
-    contents = []
-    for childNode in childrenNodes:
-        childName, childOptions = parseNode(childNode)
-        if not childOptions['stop']:
-            path = path.replace(siteRoot, '')
-            link = os.path.join(path, childName)
-            linkURL = pathname2url(link)
-            item = '[{}]({})'.format(childName, linkURL)
-        else:
-            item = childName
-            
-        contents.append(item)
-
-    return contents
-
-def writeIndexFile(path, content):
-    indexFullFileName = os.path.join(path, 'index.md')
-    try:
-        with open(indexFullFileName, 'a') as fo:
-            fo.write(content)
-    except IOError as e:
-        print('Error: Operation failed: {}'.format(e.strerror))
-
 def loadMetadata(filename):
     try:
         with open(filename, 'r') as fp:
@@ -233,6 +207,45 @@ def loadMetadata(filename):
         print('Error: operation failed: {}'.format(e.strerror))
 
     return metadata
+
+def formatContents(path, childrenNodes):
+    contents = []
+    for childNode in childrenNodes:
+        childName, childOptions = parseNode(childNode)
+        if not childOptions['stop']:
+            path = path.replace(siteRoot, '')
+            link = os.path.join(path, childNode)
+            item = formatMarkdownLinkedItem(childNode, link)
+        else:
+            item = childName
+            
+        contents.append(item)
+
+    return contents
+
+def formatMetadataListItems(path, rawItems):
+    items = []
+    for item in rawItems:
+        itemText = os.path.basename(item)
+        link = os.path.join(path,item)
+        formatedItem = formatMarkdownLinkedItem(itemText, link)
+        items.append(formatedItem)
+
+    return items
+
+def formatMarkdownLinkedItem(item, link):
+    linkURL = pathname2url(link)
+    item = '[{}]({})'.format(item, linkURL)
+
+    return item
+
+def writeIndexFile(path, content):
+    indexFullFileName = os.path.join(path, 'index.md')
+    try:
+        with open(indexFullFileName, 'a') as fo:
+            fo.write(content)
+    except IOError as e:
+        print('Error: Operation failed: {}'.format(e.strerror))
 
 def processArgs():
     global verbose, siteRoot

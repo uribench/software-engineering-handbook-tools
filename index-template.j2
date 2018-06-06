@@ -19,3 +19,11 @@
 - {{g}}
 {% endfor -%}
 {% endif -%}
+
+{% if topics is defined and topics -%}
+## Topics
+
+{% for t in topics -%}
+- {{t}}
+{% endfor -%}
+{% endif -%}
