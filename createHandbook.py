@@ -47,7 +47,7 @@ def buildTree(path, tree):
     rootName, rootOptions = parseNode(rootNode)
     rootPath = os.path.join(path, rootName)
     createRootDir(rootPath)
-    createIndexFile(rootPath, rootName, rootOptions, rootChildrenNodes)
+    createIndexFile(rootPath, rootOptions, rootName, rootChildrenNodes)
 
     # continue building the navigation tree recursively
     for childTree in rootChildrenTrees:
@@ -167,22 +167,31 @@ def createRootDir(path):
 
     os.mkdir(path)
 
-def createIndexFile(path, title, options, childrenNodes):
+def createIndexFile(path, options, title, childrenNodes):
     template = loadTemplate('.', 'index_template.j2')
-
     metadataFileName = options['id'] + metadataFileExtension
     metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
 
     if os.path.exists(metadataFullFileName):
-        metadata = loadMetadata(metadataFullFileName)
-        intro = metadata['intro']
-        guides = metadata['guides']
-        indexFileContent = template.render(title=title, intro=intro, guides=guides)
+        indexFileContents = createCustomIndexFileContents(path, template, title, metadataFullFileName)
     else:
-        contents = formatContents(path, childrenNodes)
-        indexFileContent = template.render(title=title, contents=contents)
-        
-    writeIndexFile(path, indexFileContent)
+        indexFileContents = createDefaultIndexFileContents(path, template, title, childrenNodes)
+
+    writeIndexFile(path, indexFileContents)
+
+def createCustomIndexFileContents(path, template, title, metadataFullFileName):
+    metadata = loadMetadata(metadataFullFileName)
+    intro = metadata['intro']
+    guides = metadata['guides']
+    indexFileContents = template.render(title=title, intro=intro, guides=guides)
+
+    return indexFileContents
+
+def createDefaultIndexFileContents(path, template, title, childrenNodes):
+    contents = formatContents(path, childrenNodes)
+    indexFileContents = template.render(title=title, contents=contents)
+
+    return indexFileContents
 
 def loadTemplate(templatePath, templateName):
     try:
