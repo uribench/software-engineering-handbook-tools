@@ -19,11 +19,11 @@ from docopt import docopt
 from urllib.request import pathname2url
 from jinja2 import Template
 
-configPath = 'config/navigation/'   # one or more YAML navigation configuration files
+navigationPath = 'config/navigation/'   # one or more YAML navigation configuration files
 rootConfigFile = 'root.yml'         # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
-metadataPath = 'config/metadata/'   # optional YAML files with custom content for the README.md files
+metadataPath = 'config/metadata/'   # optional YAML files with custom content for the index.md files
 metadataFileExtension = '.yml'
-indexTemplatePath = '.'
+templatesPath = 'config/templates/'
 indexTemplate = 'index-template.j2'
 
 def buildTree(path, tree):
@@ -169,7 +169,7 @@ def createRootDir(path):
     os.mkdir(path)
 
 def createIndexFile(path, options, title, childrenNodes):
-    template = loadTemplate(indexTemplatePath, indexTemplate)
+    template = loadTemplate(templatesPath, indexTemplate)
     metadataFileName = options['id'] + metadataFileExtension
     metadataFullFileName = os.path.join(siteRoot, *[metadataPath, metadataFileName])
 
@@ -192,7 +192,7 @@ def createIndexFile(path, options, title, childrenNodes):
 
 def loadTemplate(templatePath, templateName):
     try:
-        templateFullFileName = os.path.join(templatePath, templateName)
+        templateFullFileName = os.path.join(siteRoot, *[templatePath, templateName])
         with open(templateFullFileName) as templateFile:
             return Template(templateFile.read())
     except IOError as e:
@@ -256,7 +256,7 @@ def processArgs():
 def main():
     global handbookPath
 
-    rootConfigFullFileName = os.path.join(siteRoot, *[configPath, rootConfigFile])
+    rootConfigFullFileName = os.path.join(siteRoot, *[navigationPath, rootConfigFile])
 
     if not os.path.exists(rootConfigFullFileName):
         print('Error: root config file <{}> does not exist'.format(rootConfigFullFileName))
