@@ -33,13 +33,7 @@ def buildTree(path, tree):
     :param path: points to the location where the 'root directory' will be created for the provided 
         tree.
     :type path: string
-    :param tree: nested data structure representing the navigation tree from path onward with two
-        possibilities:
-        1. one-item dictionary representing a 'non-leaf directory' (having children):
-            - the 'key' is a string (root name followed by optional arguments)
-            - the 'value' is a list of root's children trees
-        2. string representing a 'leaf directory' (having no children):
-            - root name followed by optional arguments
+    :param tree: nested data structure representing the navigation tree from path onward.
         For more information and examples see: config/navigation/README.md
     :type tree: dictionary or string
     """
@@ -47,6 +41,11 @@ def buildTree(path, tree):
     rootNode, rootChildrenTrees = getRootNodeAndChildrenTrees(tree)
     rootChildrenNodes = forestToRootNodes(rootChildrenTrees)
     rootName, rootOptions = parseNode(rootNode)
+
+    # bail out if the tree root is marked as a 'stub' with the 'stop' tag
+    if rootOptions['stop']:
+        return
+
     rootPath = os.path.join(path, rootName)
     createRootDir(rootPath)
     createIndexFile(rootPath, rootOptions, rootName, rootChildrenNodes)
