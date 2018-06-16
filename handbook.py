@@ -26,15 +26,7 @@ __version__ = '0.1.2'
 def main():
     """"""
     commands = loadCommands('commands')
-    usage = appendCommandsAndSummariesToUsage(__doc__, commands)
-
-    args = docopt(usage, version=__version__, options_first=True)
-
-    command_name = args.pop('<command>')
-    command_args = args.pop('<args>')
-    if command_args is None:
-        command_args = {}
-    global_args = args
+    command_name, command_args, global_args = processArgs(commands)
 
     try:
         command_class = getattr(commands[command_name], command_name.capitalize())
@@ -43,10 +35,10 @@ def main():
         raise DocoptExit()
 
     command = command_class(command_args, global_args)
-
     command.execute()
 
 def appendCommandsAndSummariesToUsage(usage, commands):
+    """"""
     commandsAndSummaries = ''
     for name, module in commands.items():
         command_class = getattr(module, name.capitalize())
@@ -66,6 +58,19 @@ def loadCommands(dirname):
             commands.update({name: module})
 
     return commands
+
+def processArgs(commands):
+    """"""
+    usage = appendCommandsAndSummariesToUsage(__doc__, commands)
+    args = docopt(usage, version=__version__, options_first=True)
+
+    command_name = args.pop('<command>')
+    command_args = args.pop('<args>')
+    if command_args is None:
+        command_args = {}
+    global_args = args
+
+    return command_name, command_args, global_args
 
 if __name__ == '__main__':
     main()
