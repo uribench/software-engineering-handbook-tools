@@ -12,7 +12,7 @@ __version__ = '1.0.0'
 
 class Build(CommandBase):
     """
-    Builds the Handbook navigation tree from configuration
+    Build the Handbook navigation tree from configuration.
 
     Usage:
         build [options]
@@ -23,6 +23,7 @@ class Build(CommandBase):
     """
 
     def __init__(self, command_args, global_args):
+        """"""
         super().__init__(command_args, global_args, version=__version__)
 
         # navigation file name (auto-generated)
@@ -35,21 +36,24 @@ class Build(CommandBase):
         self.navigationFileTemplate = 'navigation-file-template.j2'
 
     def execute(self):
+        """Entry point for the execution of this sub-command."""
         self.processArgs()
         self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose)
         self.scanTree.scan(self.nodePerformer)
 
     def processArgs(self):
-        """Processes global_args and command_args"""
+        """Process global_args and command_args."""
 
         self.siteRoot = self.global_args['--root']
         self.verbose = self.global_args['--verbose']
 
     def nodePerformer(self, rootPath, rootName, rootOptions, rootChildrenNodes):
+        """"""
         self.createRootDir(rootPath)
         self.createIndexFile(rootPath, rootOptions, rootName, rootChildrenNodes)
 
     def createRootDir(self, path):
+        """"""
         if os.path.exists(path):
             print('Error: target directory already exists: {}'.format(path))
             sys.exit()
@@ -57,6 +61,7 @@ class Build(CommandBase):
         os.mkdir(path)
 
     def createIndexFile(self, path, options, title, childrenNodes):
+        """"""
         template = self.loadTemplate(self.templatesPath, self.navigationFileTemplate)
         metadataFileName = options['id'] + '.yml'
         metadataFullFileName = os.path.join(self.siteRoot, *[self.metadataPath, metadataFileName])
@@ -79,6 +84,7 @@ class Build(CommandBase):
         self.writeIndexFile(path, indexFileContents)
 
     def loadTemplate(self, templatePath, templateName):
+        """"""
         try:
             templateFullFileName = os.path.join(self.siteRoot, *[templatePath, templateName])
             with open(templateFullFileName) as templateFile:
@@ -87,6 +93,7 @@ class Build(CommandBase):
             print('Error: operation failed: {}'.format(e.strerror))
 
     def loadMetadata(self, filename):
+        """"""
         try:
             with open(filename, 'r') as fp:
                 metadata = yaml.load(fp)
@@ -96,6 +103,7 @@ class Build(CommandBase):
         return metadata
 
     def formatContents(self, path, childrenNodes):
+        """"""
         contents = []
         for childNode in childrenNodes:
             childName, childOptions = self.scanTree.parseNode(childNode)
@@ -111,6 +119,7 @@ class Build(CommandBase):
         return contents
 
     def formatMetadataListItems(self, path, rawItems):
+        """"""
         items = []
         for item in rawItems:
             itemText = os.path.basename(item)
@@ -121,12 +130,14 @@ class Build(CommandBase):
         return items
 
     def formatMarkdownLinkedItem(self, item, link):
+        """"""
         linkURL = pathname2url(link)
         item = '[{}]({})'.format(item, linkURL)
 
         return item
 
     def writeIndexFile(self, path, content):
+        """"""
         indexFullFileName = os.path.join(path, self.navigationFileName)
         try:
             with open(indexFullFileName, 'a') as fo:

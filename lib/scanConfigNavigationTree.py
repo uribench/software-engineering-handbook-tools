@@ -4,8 +4,14 @@ import yaml
 import re
 
 class ScanConfigNavigationTree:
-    """"""
+    """
+    Scan the configuration navigation tree.
+
+    An external performer is executed for each visited node.
+    """
+
     def __init__(self, siteRoot, verbose=False):
+        """"""
         self.siteRoot = siteRoot
         self.verbose = verbose
 
@@ -15,7 +21,8 @@ class ScanConfigNavigationTree:
         self.rootConfigFile = 'root.yml'
 
     def scan(self, nodePerformer):
-        """"""
+        """Entry point for the scan of the configuration navigation tree"""
+
         self.nodePerformer = nodePerformer
         rootConfigFullFileName = os.path.join(self.siteRoot, *[self.navigationPath, self.rootConfigFile])
 
@@ -30,15 +37,33 @@ class ScanConfigNavigationTree:
         except IOError as e:
             print('Error: operation failed: {}'.format(e.strerror))
 
+    def parseNode(self, node):
+        """
+        Parse a navigation node string and returns its parts.
+
+        Args:
+            node (str): A navigation node including a directory name (Human readable string),
+                followed by optional space-separated arguments as tags, each with the 
+                following syntax: @<key>[=<value>]
+
+        Returns:
+            str, str: nodeName, nodeTags
+        """
+
+        nodeName, nodeTags = self.splitNodeNameAndTags(node)
+        nodeOptions = self.getNodeOptions(nodeTags, nodeName)
+
+        return nodeName, nodeOptions
+
     def scanTree(self, path, tree):
         """
-        Scans the navigation tree recursively, based on the provided tree
+        Scan the provided navigation tree recursively.
 
-        :param path: location for the root directory for the root node of the provided tree.
-        :type path: string
-        :param tree: nested data structure representing the navigation tree from path onward.
-            For more information and examples see: config/navigation/README.md
-        :type tree: dictionary or string
+        Args:
+            path (str): location for the root directory for the root node of the provided tree.
+            tree (dict of {str: str} or str): nested data structure representing the navigation  
+                tree from path onward.
+                For more information and examples see: config/navigation/README.md
         """
 
         rootNode, rootChildrenTrees = self.getRootNodeAndChildrenTrees(tree)
@@ -57,13 +82,14 @@ class ScanConfigNavigationTree:
             self.scanTree(rootPath, childTree)
 
     def getHandbookName(self, tree):
+        """"""
         rootNode, rootChildrenTrees = self.getRootNodeAndChildrenTrees(tree)
         nodeName, nodeTags = self.splitNodeNameAndTags(rootNode)
 
         return nodeName
 
     def getRootNodeAndChildrenTrees(self, tree):
-
+        """"""
         if type(tree) is dict:
             # tree here is a one-item dictionary representing a 'non-leaf directory' (having children):
             #   - the 'key' is a string (root name followed by optional arguments)
@@ -78,7 +104,7 @@ class ScanConfigNavigationTree:
         return rootNode, rootChildrenTrees
 
     def forestToRootNodes(self, forest):
-        """Returns the root nodes of all the trees in forest"""
+        """Return the root nodes of all the trees in forest."""
 
         rootNodes = []
         for tree in forest:
@@ -91,7 +117,7 @@ class ScanConfigNavigationTree:
         return rootNodes
 
     def forestToRootNames(self, forest):
-        """Returns the root names of all the trees in forest"""
+        """Return the root names of all the trees in forest."""
 
         rootNodes = self.forestToRootNodes(forest)
 
@@ -102,23 +128,8 @@ class ScanConfigNavigationTree:
 
         return rootNames
 
-    def parseNode(self, node):
-        """
-        Parses a navigation node string and returns its parts
-
-        :param node: A navigation node including a directory name ('Humanized' style) followed by 
-            optional space separated arguments as tags, each with the following syntax: @<key>[=<value>]
-        :type node: String
-        :return: nodeName, nodeTags
-        :rtype: string, string
-        """
-
-        nodeName, nodeTags = self.splitNodeNameAndTags(node)
-        nodeOptions = self.getNodeOptions(nodeTags, nodeName)
-
-        return nodeName, nodeOptions
-
     def splitNodeNameAndTags(self, node):
+        """"""
         r = re.compile(r'^(?P<name>[^@]+)(?P<tags>.*)$')
         m = r.match(node)
         nodeName = m.group('name').strip()
@@ -127,6 +138,7 @@ class ScanConfigNavigationTree:
         return nodeName, nodeTags
 
     def getNodeOptions(self, tags, name):
+        """"""
         # parse explicit arguments
         validKeys = ['id', 'include', 'stop']
         nodeOptions = {}
@@ -151,6 +163,7 @@ class ScanConfigNavigationTree:
         return nodeOptions
 
     def nodeNameToNodeID(self, nodeName):
+        """"""
         # remove invalid characters
         validCharsRegEx = r'[^\w\-. ()]+'
         r = re.compile(validCharsRegEx)

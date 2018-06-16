@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+
 """
-Dispatcher for commands to build and maintain the Software Engineering Handbook
+Dispatcher for commands to build and maintain the Software Engineering Handbook.
 
 Usage:
     handbook [options] <command> [<args>...]
@@ -25,6 +26,7 @@ import commands
 __version__ = '0.1.0'
 
 def main():
+    """"""
     args = docopt(__doc__, version=__version__, options_first=True)
 
     command_name = args.pop('<command>').capitalize()
