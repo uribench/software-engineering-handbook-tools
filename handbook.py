@@ -20,23 +20,25 @@ The subcommands are:
 
 from docopt import docopt
 from docopt import DocoptExit
+import sys
+import pkgutil
 
-import commands
-
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 def main():
     """"""
     args = docopt(__doc__, version=__version__, options_first=True)
 
-    command_name = args.pop('<command>').capitalize()
+    command_name = args.pop('<command>')
     command_args = args.pop('<args>')
     if command_args is None:
         command_args = {}
     global_args = args
 
+    commands = loadCommands('commands')
+
     try:
-        command_class = getattr(commands, command_name)
+        command_class = getattr(commands[command_name], command_name.capitalize())
     except AttributeError:
         print('Error: Unknown command')
         raise DocoptExit()
@@ -44,6 +46,16 @@ def main():
     command = command_class(command_args, global_args)
 
     command.execute()
+
+def loadCommands(dirname):
+    """"""
+    commands = {}
+    for finder, name, ispkg in pkgutil.iter_modules([dirname]):
+        if name not in sys.modules:
+            module = finder.find_module(name).load_module(name)
+            commands.update({name: module})
+
+    return commands
 
 if __name__ == '__main__':
     main()
