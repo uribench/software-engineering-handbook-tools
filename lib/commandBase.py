@@ -20,3 +20,13 @@ class CommandBase:
     def execute(self):
         """Execute the command."""
         raise NotImplementedError
+
+    def summaryDescrition(self):
+        """Return a short description of the concrete command."""
+        summary = 'No summary description was provided'
+        for line in self.__doc__.splitlines():
+            summary = line.strip()
+            if summary:
+                break
+
+        return summary
