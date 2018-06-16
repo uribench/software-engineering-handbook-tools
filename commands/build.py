@@ -22,15 +22,17 @@ class Build(CommandBase):
         -v, --version   show the version and exit
     """
 
-    def __init__(self, command_args, global_args, global_params):
+    def __init__(self, command_args, global_args):
         super().__init__(command_args, global_args, version=__version__)
 
-        # optional YAML files with custom content for the navigation files (i.e., index.md)
+        # navigation file name (auto-generated)
+        self.navigationFileName = 'index.md'
+        # optional YAML files with custom content for the navigation files
         self.metadataPath = 'config/metadata/'
         # path to template files
         self.templatesPath = 'config/templates/'
-        # Jinja2 template file for the navigation files (i.e., index.md)
-        self.indexTemplate = 'index-template.j2'
+        # Jinja2 template file for the navigation files
+        self.navigationFileTemplate = 'navigation-file-template.j2'
 
     def execute(self):
         self.processArgs()
@@ -55,7 +57,7 @@ class Build(CommandBase):
         os.mkdir(path)
 
     def createIndexFile(self, path, options, title, childrenNodes):
-        template = self.loadTemplate(self.templatesPath, self.indexTemplate)
+        template = self.loadTemplate(self.templatesPath, self.navigationFileTemplate)
         metadataFileName = options['id'] + '.yml'
         metadataFullFileName = os.path.join(self.siteRoot, *[self.metadataPath, metadataFileName])
 
@@ -125,7 +127,7 @@ class Build(CommandBase):
         return item
 
     def writeIndexFile(self, path, content):
-        indexFullFileName = os.path.join(path, 'index.md')
+        indexFullFileName = os.path.join(path, self.navigationFileName)
         try:
             with open(indexFullFileName, 'a') as fo:
                 fo.write(content)

@@ -40,16 +40,6 @@ if __name__ == '__main__':
         print('Error: Unknown command')
         raise DocoptExit()
 
-    # global parameters not exposed as program arguments
-    global_params = {
-        # one or more YAML navigation configuration files
-        'navigationPath': 'config/navigation/',
-        # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
-        'rootConfigFile': 'root.yml',
-        # optional YAML files with custom content for the index.md files
-        'metadataPath': 'config/metadata/'
-    }
-
-    command = command_class(command_args, global_args, global_params)
+    command = command_class(command_args, global_args)
 
     command.execute()
