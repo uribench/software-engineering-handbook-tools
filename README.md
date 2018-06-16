@@ -1,6 +1,6 @@
 # Tools
 
-A collection of automation scripts to build and maintain the `Handbook\` directory of the 
+A collection of automation scripts to build and maintain the `Handbook` directory of the 
 [Software Engineering Handbook][1] repository.
 
 ---
