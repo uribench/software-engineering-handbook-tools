@@ -22,7 +22,7 @@ class Build(CommandBase):
         -v, --version   show the version and exit
     """
 
-    def __init__(self, command_args, global_args):
+    def __init__(self, command_args={}, global_args={}):
         """"""
         super().__init__(command_args, global_args, version=__version__)
 

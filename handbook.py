@@ -12,10 +12,8 @@ Options:
     --verbose       print warning messages
     --root=PATH     site root [default: ../software-engineering-handbook] 
 
-The subcommands are:
-    build           builds the handbook navigation (directories and navigation files)
-    toc             generates a table of contents
-    verify          verifies various aspects of the handbook
+Commands:
+{}
 """
 
 from docopt import docopt
@@ -23,19 +21,20 @@ from docopt import DocoptExit
 import sys
 import pkgutil
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 def main():
     """"""
-    args = docopt(__doc__, version=__version__, options_first=True)
+    commands = loadCommands('commands')
+    usage = appendCommandsAndSummariesToUsage(__doc__, commands)
+
+    args = docopt(usage, version=__version__, options_first=True)
 
     command_name = args.pop('<command>')
     command_args = args.pop('<args>')
     if command_args is None:
         command_args = {}
     global_args = args
-
-    commands = loadCommands('commands')
 
     try:
         command_class = getattr(commands[command_name], command_name.capitalize())
@@ -46,6 +45,17 @@ def main():
     command = command_class(command_args, global_args)
 
     command.execute()
+
+def appendCommandsAndSummariesToUsage(usage, commands):
+    commandsAndSummaries = ''
+    for name, module in commands.items():
+        command_class = getattr(module, name.capitalize())
+        command = command_class()
+        summary = command.summaryDescrition()
+        commandsAndSummaries += '    {}\t{}\n'.format(name, summary)
+        del command
+
+    return usage.format(commandsAndSummaries)
 
 def loadCommands(dirname):
     """"""
