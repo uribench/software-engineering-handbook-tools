@@ -24,8 +24,7 @@ import commands
 
 __version__ = '0.1.0'
 
-
-if __name__ == '__main__':
+def main():
     args = docopt(__doc__, version=__version__, options_first=True)
 
     command_name = args.pop('<command>').capitalize()
@@ -43,3 +42,6 @@ if __name__ == '__main__':
     command = command_class(command_args, global_args)
 
     command.execute()
+
+if __name__ == '__main__':
+    main()
