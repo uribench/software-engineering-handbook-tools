@@ -16,10 +16,10 @@ Commands:
 {}
 """
 
-from docopt import docopt
-from docopt import DocoptExit
 import sys
 import pkgutil
+from docopt import docopt
+from docopt import DocoptExit
 
 __version__ = '0.1.2'
 
@@ -39,12 +39,15 @@ def main():
 
 def appendCommandsAndSummariesToUsage(usage, commands):
     """"""
+    styleForeGreen = '\x1b[0;32;40m'
+    styleResetAll = '\x1b[0m'
     commandsAndSummaries = ''
     for name, module in commands.items():
         command_class = getattr(module, name.capitalize())
         command = command_class()
         summary = command.summaryDescrition()
-        commandsAndSummaries += '    {}\t{}\n'.format(name, summary)
+        commandsAndSummaries += \
+            '    {}{: <16}{}{}\n'.format(styleForeGreen, name, styleResetAll, summary)
         del command
 
     return usage.format(commandsAndSummaries)

@@ -1,7 +1,7 @@
 from lib.commandBase import CommandBase
 from lib.scanConfigNavigationTree import ScanConfigNavigationTree
 
-__version__ = '0.9.0'
+__version__ = '0.0.0'
 
 class Toc(CommandBase):
     """
@@ -21,9 +21,10 @@ class Toc(CommandBase):
 
     def execute(self):
         """Entry point for the execution of this sub-command."""
-        self.processArgs()
-        self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose)
-        self.scanTree.scan(self.nodePerformer)
+        print('\'toc\' command not implemented yet!')
+        # self.processArgs()
+        # self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose)
+        # self.scanTree.scan(self.nodePerformer)
 
     def processArgs(self):
         """Process global_args and command_args."""
