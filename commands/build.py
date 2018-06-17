@@ -3,7 +3,6 @@ import sys
 import yaml
 from urllib.request import pathname2url
 from jinja2 import Template
-
 from lib.commandBase import CommandBase
 from lib.scanConfigNavigationTree import ScanConfigNavigationTree
 
@@ -42,12 +41,12 @@ class Build(CommandBase):
 
     def processArgs(self):
         """Process global_args and command_args."""
-
         self.siteRoot = self.global_args['--root']
         self.verbose = self.global_args['--verbose']
 
-    def nodePerformer(self, rootPath, rootName, rootOptions, rootChildrenNodes):
+    def nodePerformer(self, rootPath, rootOptions, rootChildrenNodes):
         """"""
+        rootName = os.path.basename(rootPath)
         self.createRootDir(rootPath)
         self.createIndexFile(rootPath, rootOptions, rootName, rootChildrenNodes)
 

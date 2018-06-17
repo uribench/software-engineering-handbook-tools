@@ -75,7 +75,7 @@ class ScanConfigNavigationTree:
             return
 
         rootPath = os.path.join(path, rootName)
-        self.nodePerformer(rootPath, rootName, rootOptions, rootChildrenNodes)
+        self.nodePerformer(rootPath, rootOptions, rootChildrenNodes)
 
         # continue building the navigation tree recursively
         for childTree in rootChildrenTrees:
