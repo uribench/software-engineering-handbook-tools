@@ -4,16 +4,16 @@
 Dispatcher for commands to build and maintain the Software Engineering Handbook.
 
 Usage:
-    handbook [options] <command> [<args>...]
+  handbook [options] <command> [<args>...]
 
 Options:
-    -h, --help      show this help message and exit
-    -v, --version   show the version and exit
-    --verbose       print warning messages
-    --root=PATH     site root [default: ../software-engineering-handbook] 
+  -h, --help        show this help message and exit
+  -v, --version     show the version and exit
+  --verbose         print warning messages
+  --root=PATH       site root [default: ../software-engineering-handbook] 
 
 Commands:
-{}
+{commands}
 """
 
 import sys
@@ -47,10 +47,10 @@ def appendCommandsAndSummariesToUsage(usage, commands):
         command = command_class()
         summary = command.summaryDescrition()
         commandsAndSummaries += \
-            '    {}{: <16}{}{}\n'.format(styleForeGreen, name, styleResetAll, summary)
+            '  {}{: <18}{}{}\n'.format(styleForeGreen, name, styleResetAll, summary)
         del command
 
-    return usage.format(commandsAndSummaries)
+    return usage.format(commands=commandsAndSummaries)
 
 def loadCommands(dirname):
     """"""
@@ -71,6 +71,7 @@ def processArgs(commands):
     command_args = args.pop('<args>')
     if command_args is None:
         command_args = {}
+    # after removing the command_name and command_args, what is left is considered global_args
     global_args = args
 
     return command_name, command_args, global_args

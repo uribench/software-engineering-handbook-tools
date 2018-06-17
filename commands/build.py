@@ -1,7 +1,6 @@
 import os
 import sys
 import yaml
-from docopt import docopt
 from urllib.request import pathname2url
 from jinja2 import Template
 
@@ -15,11 +14,11 @@ class Build(CommandBase):
     Build the Handbook navigation tree from configuration.
 
     Usage:
-        build [options]
+      build [options]
 
     Options:
-        -h --help       show this help message and exit
-        -v, --version   show the version and exit
+      -h --help         show this help message and exit
+      -v, --version     show the version and exit
     """
 
     def __init__(self, command_args={}, global_args={}):
