@@ -11,15 +11,14 @@ class Toc(CommandBase):
     Compose a TOC of the Handbook navigation tree from configuration.
 
     Usage:
-      toc [options] [FILE]
+      toc [options] [PATH]
 
     Arguments:
-      FILE  destination TOC filename
+      PATH                  path to TOC filename relative to site root
 
     Options:
       -h --help             show this help message and exit
       -v, --version         show the version and exit
-      --toc-path=PATH       TOC file path relative to site root [default: .]
       -d --depth=LEVEL      max depth of the generated TOC tree [default: 8]
       --no-prefix           do not include item prefix for the TOC items
       --no-index            do not include index numbers for the TOC items
@@ -53,13 +52,12 @@ class Toc(CommandBase):
         self.includeIndex = not self.args['--no-index']
         self.includeLink = not self.args['--no-link']
         self.includeTocHeader = self.args['--header']
-        self.tocPath = self.args['--toc-path']
 
     def initOutputFile(self):
         """"""
-        tocFileName = self.args['FILE']
-        if tocFileName is not None:
-            tocFullFileName = os.path.join(self.siteRoot, *[self.tocPath, tocFileName])
+        tocFilePath = self.args['PATH']
+        if tocFilePath is not None:
+            tocFullFileName = os.path.join(self.siteRoot, tocFilePath)
             if os.path.exists(tocFullFileName):
                 print('Error: TOC file already exists: {}'.format(tocFullFileName))
                 sys.exit()
