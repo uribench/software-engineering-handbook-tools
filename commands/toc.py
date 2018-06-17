@@ -4,7 +4,7 @@ from urllib.request import pathname2url
 from lib.commandBase import CommandBase
 from lib.scanConfigNavigationTree import ScanConfigNavigationTree
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 
 class Toc(CommandBase):
     """
@@ -19,8 +19,7 @@ class Toc(CommandBase):
     Options:
       -h --help             show this help message and exit
       -v, --version         show the version and exit
-      --toc-path=PATH       TOC file path relative to site root
-                            [default: .]
+      --toc-path=PATH       TOC file path relative to site root [default: .]
       -d --depth=LEVEL      max depth of the generated TOC tree [default: 8]
       --no-prefix           do not include item prefix for the TOC items
       --no-index            do not include index numbers for the TOC items
