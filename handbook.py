@@ -39,10 +39,11 @@ def main():
 
 def appendCommandsAndSummariesToUsage(usage, commands):
     """"""
+    sortedCommands = sorted(commands.items())
     styleForeGreen = '\x1b[0;32;40m'
     styleResetAll = '\x1b[0m'
     commandsAndSummaries = ''
-    for name, module in commands.items():
+    for name, module in sortedCommands:
         command_class = getattr(module, name.capitalize())
         command = command_class()
         summary = command.summaryDescrition()
