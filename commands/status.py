@@ -52,7 +52,8 @@ class Status(CommandBase):
         for task in taskQueue:
             rootPath = os.path.join(self.siteRoot, task['rootPath'])
             self.scanTree.scan(rootPath, task['title'], self.nodePerformer)
-        self.report.write('\n\n  **Total Authored File Count: {}**'.format(self.authoredFilesCount))
+        self.report.write('\n\n  **Total Authored Files Count: {}**'. \
+                          format(self.authoredFilesCount))
         self.report.close()
 
     def processArgs(self):
