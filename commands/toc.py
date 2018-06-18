@@ -11,14 +11,12 @@ class Toc(CommandBase):
     Compose a TOC of the Handbook from configuration.
 
     Usage:
-      toc [options] [PATH]
-
-    Arguments:
-      PATH                  path to output TOC file relative to site root
+      toc [options]
 
     Options:
       -h, --help            show this help message and exit
       -v, --version         show the version and exit
+      -o, --output=FILE     specify output TOC file relative to site root
       -d, --depth=LEVEL     max depth of the generated TOC tree [default: 8]
       --no-prefix           do not include item prefix for the TOC items
       --no-index            do not include index numbers for the TOC items
@@ -31,7 +29,7 @@ class Toc(CommandBase):
       handbook.py toc --version
       handbook.py toc -d 3
       handbook.py toc --depth=3 --no-index
-      handbook.py toc --d 2 --no-index --no-link TOC2.md
+      handbook.py toc --d 2 --no-index --no-link -o TOC2.md
     """
 
     def __init__(self, command_args={}, global_args={}):
@@ -45,16 +43,18 @@ class Toc(CommandBase):
     def execute(self):
         """Entry point for the execution of this sub-command."""
         self.processArgs()
-        self.outputFile = self.initOutputFile()
+        self.tocFile = self.initOutputFile()
         self.depth = 0
         self.index = []
         self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose)
         self.scanTree.scan(self.nodePerformer)
+        self.tocFile.close()
 
     def processArgs(self):
         """Process global_args and command_args."""
         self.siteRoot = self.global_args['--root']
         self.verbose = self.global_args['--verbose']
+        self.outputFile = self.args['--output']
         self.maxDepth = int(self.args['--depth'])
         self.includePrefix = not self.args['--no-prefix']
         self.includeIndex = not self.args['--no-index']
@@ -63,9 +63,8 @@ class Toc(CommandBase):
 
     def initOutputFile(self):
         """"""
-        tocFilePath = self.args['PATH']
-        if tocFilePath is not None:
-            tocFullFileName = os.path.join(self.siteRoot, tocFilePath)
+        if self.outputFile is not None:
+            tocFullFileName = os.path.join(self.siteRoot, self.outputFile)
             if os.path.exists(tocFullFileName):
                 print('Error: TOC file already exists: {}'.format(tocFullFileName))
                 sys.exit()
@@ -91,7 +90,7 @@ class Toc(CommandBase):
 
         # skip handbook root and too deep TOC items 
         if self.depth > 1 and (self.depth - 1) <= self.maxDepth:
-            self.outputFile.write(self.formatTOC(name, link))
+            self.tocFile.write(self.formatTOC(name, link))
 
     def updateIndexCounter(self, link):
         """"""

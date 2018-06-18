@@ -58,7 +58,6 @@ class Status(CommandBase):
 
     def processArgs(self):
         """Process global_args and command_args."""
-
         self.siteRoot = self.global_args['--root']
         self.outputFile = self.args['--output']
 

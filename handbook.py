@@ -22,7 +22,7 @@ Examples:
   handbook.py -h
   handbook.py some-command -h
   handbook.py some-command --version
-="""
+"""
 
 import sys
 import pkgutil
