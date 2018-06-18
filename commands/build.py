@@ -18,11 +18,13 @@ class Build(CommandBase):
     Options:
       -h, --help        show this help message and exit
       -v, --version     show the version and exit
+      --no-stop         ignore 'stop' tags to scan the entire tree
 
     Examples:
       handbook.py build
       handbook.py build -h
       handbook.py build --version
+      handbook.py build --no-stop
     """
 
     def __init__(self, command_args={}, global_args={}):
@@ -41,13 +43,14 @@ class Build(CommandBase):
     def execute(self):
         """Entry point for the execution of this sub-command."""
         self.processArgs()
-        self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose)
+        self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose, self.noStop)
         self.scanTree.scan(self.nodePerformer)
 
     def processArgs(self):
         """Process global_args and command_args."""
         self.siteRoot = self.global_args['--root']
         self.verbose = self.global_args['--verbose']
+        self.noStop = self.args['--no-stop']
 
     def nodePerformer(self, rootPath, rootOptions, rootChildrenNodes):
         """"""

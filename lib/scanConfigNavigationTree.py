@@ -71,7 +71,8 @@ class ScanConfigNavigationTree:
         rootChildrenNodes = self.forestToRootNodes(rootChildrenTrees)
         rootName, rootOptions = self.parseNode(rootNode)
 
-        # bail out if the tree root is marked as a 'stub' with the 'stop' tag
+        # bail out if the tree root is marked as a 'stub' with the 'stop' tag 
+        # and we were not asked to ignore it
         if rootOptions['stop'] and not self.noStop:
             return
 
