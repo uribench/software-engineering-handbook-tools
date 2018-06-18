@@ -5,6 +5,8 @@ Dispatcher for commands to build and maintain the Software Engineering Handbook.
 
 Usage:
   handbook [options] <command> [<args>...]
+  handbook (-h|--help)
+  handbook (-v|--version)
 
 Options:
   -h, --help        show this help message and exit
@@ -40,7 +42,7 @@ def main():
 def appendCommandsAndSummariesToUsage(usage, commands):
     """"""
     sortedCommands = sorted(commands.items())
-    styleForeGreen = '\x1b[0;32;40m'
+    styleForeGreen = '\x1b[0;32m'
     styleResetAll = '\x1b[0m'
     commandsAndSummaries = ''
     for name, module in sortedCommands:
