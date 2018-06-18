@@ -4,9 +4,9 @@
 Dispatcher for commands to build and maintain the Software Engineering Handbook.
 
 Usage:
-  handbook [options] <command> [<args>...]
-  handbook (-h|--help)
-  handbook (-v|--version)
+  handbook.py [options] <command> [<args>...]
+  handbook.py (-h|--help)
+  handbook.py (-v|--version)
 
 Options:
   -h, --help        show this help message and exit
@@ -16,7 +16,13 @@ Options:
 
 Commands:
 {commands}
-"""
+
+Examples:
+  handbook.py some-command
+  handbook.py -h
+  handbook.py some-command -h
+  handbook.py some-command --version
+="""
 
 import sys
 import pkgutil

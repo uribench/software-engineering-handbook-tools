@@ -16,8 +16,13 @@ class Build(CommandBase):
       build [options]
 
     Options:
-      -h --help         show this help message and exit
+      -h, --help        show this help message and exit
       -v, --version     show the version and exit
+
+    Examples:
+      handbook.py build
+      handbook.py build -h
+      handbook.py build --version
     """
 
     def __init__(self, command_args={}, global_args={}):

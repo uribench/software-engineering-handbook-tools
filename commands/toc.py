@@ -17,13 +17,21 @@ class Toc(CommandBase):
       PATH                  path to TOC filename relative to site root
 
     Options:
-      -h --help             show this help message and exit
+      -h, --help            show this help message and exit
       -v, --version         show the version and exit
-      -d --depth=LEVEL      max depth of the generated TOC tree [default: 8]
+      -d, --depth=LEVEL     max depth of the generated TOC tree [default: 8]
       --no-prefix           do not include item prefix for the TOC items
       --no-index            do not include index numbers for the TOC items
       --no-link             do not include links for the TOC items
       --header              include HTML header for the TOC file
+
+    Examples:
+      handbook.py toc
+      handbook.py toc -h
+      handbook.py toc --version
+      handbook.py toc -d 3
+      handbook.py toc --depth=3 --no-index
+      handbook.py toc --d 2 --no-index --no-link TOC2.md
     """
 
     def __init__(self, command_args={}, global_args={}):
