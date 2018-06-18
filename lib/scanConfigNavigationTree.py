@@ -10,10 +10,11 @@ class ScanConfigNavigationTree:
     An external performer is executed for each visited node.
     """
 
-    def __init__(self, siteRoot, verbose=False):
+    def __init__(self, siteRoot, verbose=False, noStop=False):
         """"""
         self.siteRoot = siteRoot
         self.verbose = verbose
+        self.noStop = noStop
 
         # one or more YAML navigation configuration files
         self.navigationPath = 'config/navigation/'
@@ -71,7 +72,7 @@ class ScanConfigNavigationTree:
         rootName, rootOptions = self.parseNode(rootNode)
 
         # bail out if the tree root is marked as a 'stub' with the 'stop' tag
-        if rootOptions['stop']:
+        if rootOptions['stop'] and not self.noStop:
             return
 
         rootPath = os.path.join(path, rootName)

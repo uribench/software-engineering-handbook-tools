@@ -18,6 +18,7 @@ class Toc(CommandBase):
       -v, --version         show the version and exit
       -o, --output=FILE     specify output TOC file relative to site root
       -d, --depth=LEVEL     max depth of the generated TOC tree [default: 8]
+      --no-stop             ignore 'stop' tags to scan the entire tree
       --no-prefix           do not include item prefix for the TOC items
       --no-index            do not include index numbers for the TOC items
       --no-link             do not include links for the TOC items
@@ -46,7 +47,7 @@ class Toc(CommandBase):
         self.tocFile = self.initOutputFile()
         self.depth = 0
         self.index = []
-        self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose)
+        self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose, self.noStop)
         self.scanTree.scan(self.nodePerformer)
         self.tocFile.close()
 
@@ -56,6 +57,7 @@ class Toc(CommandBase):
         self.verbose = self.global_args['--verbose']
         self.outputFile = self.args['--output']
         self.maxDepth = int(self.args['--depth'])
+        self.noStop = self.args['--no-stop']
         self.includePrefix = not self.args['--no-prefix']
         self.includeIndex = not self.args['--no-index']
         self.includeLink = not self.args['--no-link']
