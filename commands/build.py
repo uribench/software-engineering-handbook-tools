@@ -31,7 +31,7 @@ class Build(CommandBase):
 
         # navigation file name (auto-generated)
         self.navigationFileName = 'index.md'
-        # optional YAML files with custom content for the navigation files
+        # optional authored metadata YAML files for the navigation files
         self.metadataPath = 'config/metadata/'
         # path to template files
         self.templatesPath = 'config/templates/'
