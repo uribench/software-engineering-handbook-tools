@@ -31,6 +31,7 @@ class Toc(CommandBase):
       handbook.py toc -d 3
       handbook.py toc --depth=3 --no-index
       handbook.py toc --d 2 --no-index --no-link -o TOC2.md
+      handbook.py toc --no-stop -o TOC.md
     """
 
     def __init__(self, command_args={}, global_args={}):
