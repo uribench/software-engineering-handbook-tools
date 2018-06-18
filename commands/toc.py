@@ -8,7 +8,7 @@ __version__ = '0.5.1'
 
 class Toc(CommandBase):
     """
-    Compose a TOC of the Handbook navigation tree from configuration.
+    Compose a TOC of the Handbook from configuration.
 
     Usage:
       toc [options] [PATH]

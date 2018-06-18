@@ -10,7 +10,7 @@ __version__ = '1.0.0'
 
 class Build(CommandBase):
     """
-    Build the Handbook navigation tree from configuration.
+    Build the Handbook from configuration.
 
     Usage:
       build [options]
