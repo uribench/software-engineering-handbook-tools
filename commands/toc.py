@@ -14,7 +14,7 @@ class Toc(CommandBase):
       toc [options] [PATH]
 
     Arguments:
-      PATH                  path to TOC filename relative to site root
+      PATH                  path to output TOC file relative to site root
 
     Options:
       -h, --help            show this help message and exit
