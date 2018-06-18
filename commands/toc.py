@@ -110,15 +110,16 @@ class Toc(CommandBase):
         # compose optional item prefix string
         prefix = ''
         if self.includePrefix:
-            prefix = self.markdownUL
+            prefix = self.markdownUL + ' '
         # compose optional index string
         indexString = ''
         if self.includeIndex:
             indexString = '.'.join(str(e) for e in self.index[1:self.depth])
+            indexString += ' '
         # compose item string with optional link
         tocItem = name
         if self.includeLink:
             linkURL = pathname2url(link)
             tocItem = '[' + name + '](' + linkURL + ')'
 
-        return '{}{} {} {}\n'.format(indent, prefix, indexString, tocItem)
+        return '{}{}{}{}\n'.format(indent, prefix, indexString, tocItem)
