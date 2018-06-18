@@ -11,15 +11,16 @@ class ScanDirectoryTree:
         """"""
         self.siteRoot = siteRoot
 
-    def scan(self, rootPath, nodePerformer):
+    def scan(self, rootPath, title, nodePerformer):
         """Entry point for the scan of the directory tree"""
         self.nodePerformer = nodePerformer
+        self.title = title
         self.scanTree(rootPath)
 
     def scanTree(self, path):
         """Scan the provided directory tree recursively"""
         fileList = os.listdir(path)
-        self.nodePerformer(path, fileList)
+        self.nodePerformer(path, self.title, fileList)
 
         for fileName in fileList:
             filePath = os.path.join(path, fileName)

@@ -1,8 +1,9 @@
 import os
+import sys
 from lib.commandBase import CommandBase
 from lib.scanDirectoryTree import ScanDirectoryTree
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 class Status(CommandBase):
     """
@@ -36,13 +37,23 @@ class Status(CommandBase):
         self.whiteList = ['.md', '.yml']
         # file names to ignore
         self.blackList = []
+        self.reportTitle = '# Status Report\n'
 
     def execute(self):
         """Entry point for the execution of this sub-command."""
         self.processArgs()
-        rootPath = os.path.join(self.siteRoot, self.guidesPath)
+        self.report = self.initOutputFile()
         self.scanTree = ScanDirectoryTree(self.siteRoot)
-        self.scanTree.scan(rootPath, self.nodePerformer)
+        taskQueue = [{'title': 'Metadata Files', 'rootPath': self.metadataPath}, 
+                     {'title': 'Guides Files', 'rootPath': self.guidesPath}, 
+                     {'title': 'Topics Files', 'rootPath': self.topicsPath}]
+        self.title = ''
+        self.authoredFilesCount = 0
+        for task in taskQueue:
+            rootPath = os.path.join(self.siteRoot, task['rootPath'])
+            self.scanTree.scan(rootPath, task['title'], self.nodePerformer)
+        self.report.write('\n\n  **Total Authored File Count: {}**'.format(self.authoredFilesCount))
+        self.report.close()
 
     def processArgs(self):
         """Process global_args and command_args."""
@@ -50,11 +61,39 @@ class Status(CommandBase):
         self.siteRoot = self.global_args['--root']
         self.outputFile = self.args['--output']
 
-    def nodePerformer(self, path, fileList):
+    def initOutputFile(self):
         """"""
-        print('Files before filtering: {}'.format(fileList))
+        if self.outputFile is not None:
+            reportFullFileName = os.path.join(self.siteRoot, self.outputFile)
+            if os.path.exists(reportFullFileName):
+                print('Error: Report file already exists: {}'.format(reportFullFileName))
+                sys.exit()
+
+            fo = open(reportFullFileName, 'a')
+        else:
+            fo = sys.stdout
+
+        try:
+            fo.write(self.reportTitle)
+        except IOError as e:
+            print('Error: Operation failed: {}'.format(e.strerror))
+
+        return fo
+
+    def nodePerformer(self, path, title, fileList):
+        """"""
         fileList = self.filterFiles(path, fileList)
-        print('Files after filtering: {}'.format(fileList))
+        shortPath = path.replace(self.siteRoot, '')
+        try:
+            if title != self.title:
+                self.report.write('\n## {}\n\n'.format(title))
+                self.title = title
+            for file in fileList:
+                filePath = os.path.join(shortPath, file)
+                self.report.write('  - {}  \n'.format(filePath))
+                self.authoredFilesCount +=1
+        except IOError as e:
+            print('Error: Operation failed: {}'.format(e.strerror))
 
     def filterFiles(self, path, fileList):
         """"""
