@@ -6,7 +6,7 @@ from jinja2 import Template
 from lib.commandBase import CommandBase
 from lib.scanConfigNavigationTree import ScanConfigNavigationTree
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 class Build(CommandBase):
     """
@@ -58,7 +58,8 @@ class Build(CommandBase):
         self.createRootDir(rootPath)
         self.createIndexFile(rootPath, rootOptions, rootName, rootChildrenNodes)
 
-    def createRootDir(self, path):
+    @staticmethod
+    def createRootDir(path):
         """"""
         if os.path.exists(path):
             print('Error: target directory already exists: {}'.format(path))
@@ -86,7 +87,8 @@ class Build(CommandBase):
         guides = self.formatMetadataListItems('/Guides', rawGuides)
         topics = self.formatMetadataListItems('/Topics', rawTopics)
 
-        indexFileContents = template.render(title=title, intro=intro, contents=contents, guides=guides, topics=topics)
+        indexFileContents = template.render(title=title, intro=intro, contents=contents,
+                                            guides=guides, topics=topics)
         self.writeIndexFile(path, indexFileContents)
 
     def loadTemplate(self, templatePath, templateName):
@@ -98,7 +100,8 @@ class Build(CommandBase):
         except IOError as e:
             print('Error: operation failed: {}'.format(e.strerror))
 
-    def loadMetadata(self, filename):
+    @staticmethod
+    def loadMetadata(filename):
         """"""
         try:
             with open(filename, 'r') as fp:
@@ -119,7 +122,7 @@ class Build(CommandBase):
                 item = self.formatMarkdownLinkedItem(childNode, link)
             else:
                 item = childName
-                
+
             contents.append(item)
 
         return contents
@@ -129,13 +132,14 @@ class Build(CommandBase):
         items = []
         for item in rawItems:
             itemText = os.path.basename(item)
-            link = os.path.join(path,item)
+            link = os.path.join(path, item)
             formatedItem = self.formatMarkdownLinkedItem(itemText, link)
             items.append(formatedItem)
 
         return items
 
-    def formatMarkdownLinkedItem(self, item, link):
+    @staticmethod
+    def formatMarkdownLinkedItem(item, link):
         """"""
         linkURL = pathname2url(link)
         item = '[{}]({})'.format(item, linkURL)

@@ -12,7 +12,7 @@ Options:
   -h, --help        show this help message and exit
   -v, --version     show the version and exit
   --verbose         print warning messages
-  --root=PATH       site root [default: ../software-engineering-handbook] 
+  --root=PATH       site root [default: ../software-engineering-handbook]
 
 Commands:
 {commands}
@@ -29,7 +29,7 @@ import pkgutil
 from docopt import docopt
 from docopt import DocoptExit
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 def main():
     """"""
@@ -64,7 +64,7 @@ def appendCommandsAndSummariesToUsage(usage, commands):
 def loadCommands(dirname):
     """"""
     commands = {}
-    for finder, name, ispkg in pkgutil.iter_modules([dirname]):
+    for finder, name, _ in pkgutil.iter_modules([dirname]):
         if name not in sys.modules:
             module = finder.find_module(name).load_module(name)
             commands.update({name: module})

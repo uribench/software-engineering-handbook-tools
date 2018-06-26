@@ -44,8 +44,8 @@ class Status(CommandBase):
         self.processArgs()
         self.report = self.initOutputFile()
         self.scanTree = ScanDirectoryTree(self.siteRoot)
-        taskQueue = [{'title': 'Metadata Files', 'rootPath': self.metadataPath}, 
-                     {'title': 'Guides Files', 'rootPath': self.guidesPath}, 
+        taskQueue = [{'title': 'Metadata Files', 'rootPath': self.metadataPath},
+                     {'title': 'Guides Files', 'rootPath': self.guidesPath},
                      {'title': 'Topics Files', 'rootPath': self.topicsPath}]
         self.title = ''
         self.authoredFilesCount = 0
@@ -91,7 +91,7 @@ class Status(CommandBase):
             for file in fileList:
                 filePath = os.path.join(shortPath, file)
                 self.report.write('  - {}  \n'.format(filePath))
-                self.authoredFilesCount +=1
+                self.authoredFilesCount += 1
         except IOError as e:
             print('Error: Operation failed: {}'.format(e.strerror))
 
@@ -105,6 +105,6 @@ class Status(CommandBase):
                 if extension not in self.whiteList:
                     ignoreList.append(fileName)
             else:
-                    ignoreList.append(fileName)
+                ignoreList.append(fileName)
 
         return list(set(fileList) - set(ignoreList + self.blackList))

@@ -91,7 +91,7 @@ class Toc(CommandBase):
         link = rootPath.replace(self.siteRoot, '')
         self.updateIndexCounter(link)
 
-        # skip handbook root and too deep TOC items 
+        # skip handbook root and too deep TOC items
         if self.depth > 1 and (self.depth - 1) <= self.maxDepth:
             self.tocFile.write(self.formatTOC(name, link))
 
