@@ -45,10 +45,11 @@ class Build(CommandBase):
         self.templates_path = 'config/templates/'
         # Jinja2 template file for the navigation files
         self.navigation_file_template = 'navigation-file-template.j2'
+        self._process_args()
+        self.scan_tree = None
 
     def execute(self):
         """Entry point for the execution of this sub-command"""
-        self._process_args()
         self.scan_tree = ScanConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
         self.scan_tree.scan(self.node_performer)
 

@@ -47,13 +47,14 @@ class Toc(CommandBase):
         self.toc_header = '<style>ul { list-style-type: none; }</style>\n\n'
         self.toc_title = '# Table of Contents\n\n'
         self.markdown_ul = '-'
-
-    def execute(self):
-        """Entry point for the execution of this sub-command"""
         self._process_args()
         self.toc_file = self._init_output_file()
         self.depth = 0
         self.index = []
+        self.scan_tree = None
+
+    def execute(self):
+        """Entry point for the execution of this sub-command"""
         self.scan_tree = ScanConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
         self.scan_tree.scan(self.node_performer)
         self.toc_file.close()
