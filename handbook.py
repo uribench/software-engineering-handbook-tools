@@ -45,22 +45,6 @@ def main():
     command = command_class(command_args, global_args)
     command.execute()
 
-def _append_commands_and_summaries_to_usage(usage, commands):
-    """"""
-    sorted_commands = sorted(commands.items())
-    style_fore_green = '\x1b[0;32m'
-    style_reset_all = '\x1b[0m'
-    commands_and_summaries = ''
-    for name, module in sorted_commands:
-        command_class = getattr(module, name.capitalize())
-        command = command_class()
-        summary = command.summary_description()
-        commands_and_summaries += \
-            '  {}{: <18}{}{}\n'.format(style_fore_green, name, style_reset_all, summary)
-        del command
-
-    return usage.format(commands=commands_and_summaries)
-
 def _load_commands(dirname):
     """"""
     commands = {}
@@ -85,6 +69,21 @@ def _process_args(commands):
     global_args = args
 
     return command_name, command_args, global_args
+
+def _append_commands_and_summaries_to_usage(usage, commands):
+    """"""
+    sorted_commands = sorted(commands.items())
+    style_fore_green = '\x1b[0;32m'
+    style_reset_all = '\x1b[0m'
+    commands_and_summaries = ''
+    for name, module in sorted_commands:
+        command_class = getattr(module, name.capitalize())
+        # do not instantiate the class. use its class method directly.
+        summary = command_class.summary_description()
+        commands_and_summaries += \
+            '  {}{: <18}{}{}\n'.format(style_fore_green, name, style_reset_all, summary)
+
+    return usage.format(commands=commands_and_summaries)
 
 if __name__ == '__main__':
     main()
