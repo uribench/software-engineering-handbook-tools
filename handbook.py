@@ -29,12 +29,12 @@ import pkgutil
 from docopt import docopt
 from docopt import DocoptExit
 
-__version__ = '0.1.3'
+__version__ = '0.2.0'
 
 def main():
-    """"""
-    commands = loadCommands('commands')
-    command_name, command_args, global_args = processArgs(commands)
+    """Program entry point"""
+    commands = _load_commands('commands')
+    command_name, command_args, global_args = _process_args(commands)
 
     try:
         command_class = getattr(commands[command_name], command_name.capitalize())
@@ -45,23 +45,23 @@ def main():
     command = command_class(command_args, global_args)
     command.execute()
 
-def appendCommandsAndSummariesToUsage(usage, commands):
+def _append_commands_and_summaries_to_usage(usage, commands):
     """"""
-    sortedCommands = sorted(commands.items())
-    styleForeGreen = '\x1b[0;32m'
-    styleResetAll = '\x1b[0m'
-    commandsAndSummaries = ''
-    for name, module in sortedCommands:
+    sorted_commands = sorted(commands.items())
+    style_fore_green = '\x1b[0;32m'
+    style_reset_all = '\x1b[0m'
+    commands_and_summaries = ''
+    for name, module in sorted_commands:
         command_class = getattr(module, name.capitalize())
         command = command_class()
-        summary = command.summaryDescrition()
-        commandsAndSummaries += \
-            '  {}{: <18}{}{}\n'.format(styleForeGreen, name, styleResetAll, summary)
+        summary = command.summary_description()
+        commands_and_summaries += \
+            '  {}{: <18}{}{}\n'.format(style_fore_green, name, style_reset_all, summary)
         del command
 
-    return usage.format(commands=commandsAndSummaries)
+    return usage.format(commands=commands_and_summaries)
 
-def loadCommands(dirname):
+def _load_commands(dirname):
     """"""
     commands = {}
     for finder, name, _ in pkgutil.iter_modules([dirname]):
@@ -71,16 +71,17 @@ def loadCommands(dirname):
 
     return commands
 
-def processArgs(commands):
+def _process_args(commands):
     """"""
-    usage = appendCommandsAndSummariesToUsage(__doc__, commands)
+    usage = _append_commands_and_summaries_to_usage(__doc__, commands)
     args = docopt(usage, version=__version__, options_first=True)
 
     command_name = args.pop('<command>')
     command_args = args.pop('<args>')
     if command_args is None:
         command_args = {}
-    # after removing the command_name and command_args, what is left is considered global_args
+    # after removing the command_name and command_args,
+    # what is left is considered global_args
     global_args = args
 
     return command_name, command_args, global_args

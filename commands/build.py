@@ -1,12 +1,18 @@
+"""
+'build' sub-command of the 'handbook' command.
+
+This module builds the Handbook from configuration files.
+"""
+
 import os
 import sys
-import yaml
 from urllib.request import pathname2url
 from jinja2 import Template
+import yaml
 from lib.commandBase import CommandBase
 from lib.scanConfigNavigationTree import ScanConfigNavigationTree
 
-__version__ = '1.0.1'
+__version__ = '1.1.0'
 
 class Build(CommandBase):
     """
@@ -27,39 +33,39 @@ class Build(CommandBase):
       handbook.py build --no-stop
     """
 
-    def __init__(self, command_args={}, global_args={}):
+    def __init__(self, command_args=None, global_args=None):
         """"""
         super().__init__(command_args, global_args, version=__version__)
 
         # navigation file name (auto-generated)
-        self.navigationFileName = 'index.md'
+        self.navigation_filename = 'index.md'
         # optional authored metadata YAML files for the navigation files
-        self.metadataPath = 'config/metadata/'
+        self.metadata_path = 'config/metadata/'
         # path to template files
-        self.templatesPath = 'config/templates/'
+        self.templates_path = 'config/templates/'
         # Jinja2 template file for the navigation files
-        self.navigationFileTemplate = 'navigation-file-template.j2'
+        self.navigation_file_template = 'navigation-file-template.j2'
 
     def execute(self):
-        """Entry point for the execution of this sub-command."""
-        self.processArgs()
-        self.scanTree = ScanConfigNavigationTree(self.siteRoot, self.verbose, self.noStop)
-        self.scanTree.scan(self.nodePerformer)
+        """Entry point for the execution of this sub-command"""
+        self._process_args()
+        self.scan_tree = ScanConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
+        self.scan_tree.scan(self.node_performer)
 
-    def processArgs(self):
-        """Process global_args and command_args."""
-        self.siteRoot = self.global_args['--root']
+    def node_performer(self, root_path, root_options, root_children_nodes):
+        """Custom performer executed for each visited node"""
+        root_name = os.path.basename(root_path)
+        self._create_root_dir(root_path)
+        self._create_index_file(root_path, root_options, root_name, root_children_nodes)
+
+    def _process_args(self):
+        """Process global_args and command_args"""
+        self.site_root = self.global_args['--root']
         self.verbose = self.global_args['--verbose']
-        self.noStop = self.args['--no-stop']
-
-    def nodePerformer(self, rootPath, rootOptions, rootChildrenNodes):
-        """"""
-        rootName = os.path.basename(rootPath)
-        self.createRootDir(rootPath)
-        self.createIndexFile(rootPath, rootOptions, rootName, rootChildrenNodes)
+        self.no_stop = self.args['--no-stop']
 
     @staticmethod
-    def createRootDir(path):
+    def _create_root_dir(path):
         """"""
         if os.path.exists(path):
             print('Error: target directory already exists: {}'.format(path))
@@ -67,90 +73,91 @@ class Build(CommandBase):
 
         os.mkdir(path)
 
-    def createIndexFile(self, path, options, title, childrenNodes):
+    def _create_index_file(self, path, options, title, children_nodes):
         """"""
-        template = self.loadTemplate(self.templatesPath, self.navigationFileTemplate)
-        metadataFileName = options['id'] + '.yml'
-        metadataFullFileName = os.path.join(self.siteRoot, *[self.metadataPath, metadataFileName])
+        template = self._load_template(self.templates_path, self.navigation_file_template)
+        metadata_filename = options['id'] + '.yml'
+        metadata_full_filename = os.path.join(self.site_root,
+                                              *[self.metadata_path, metadata_filename])
 
         intro = []
-        rawGuides = []
-        rawTopics = []
+        raw_guides = []
+        raw_topics = []
 
-        if os.path.exists(metadataFullFileName):
-            metadata = self.loadMetadata(metadataFullFileName)
+        if os.path.exists(metadata_full_filename):
+            metadata = self._load_metadata(metadata_full_filename)
             intro = metadata.get('intro', [])
-            rawGuides = metadata.get('guides', [])
-            rawTopics = metadata.get('topics', [])
+            raw_guides = metadata.get('guides', [])
+            raw_topics = metadata.get('topics', [])
 
-        contents = self.formatContents(path, childrenNodes)
-        guides = self.formatMetadataListItems('/Guides', rawGuides)
-        topics = self.formatMetadataListItems('/Topics', rawTopics)
+        contents = self._format_contents(path, children_nodes)
+        guides = self._format_metadata_list_items('/Guides', raw_guides)
+        topics = self._format_metadata_list_items('/Topics', raw_topics)
 
-        indexFileContents = template.render(title=title, intro=intro, contents=contents,
-                                            guides=guides, topics=topics)
-        self.writeIndexFile(path, indexFileContents)
+        index_file_contents = template.render(title=title, intro=intro, contents=contents,
+                                              guides=guides, topics=topics)
+        self._write_index_file(path, index_file_contents)
 
-    def loadTemplate(self, templatePath, templateName):
+    def _load_template(self, template_path, template_name):
         """"""
         try:
-            templateFullFileName = os.path.join(self.siteRoot, *[templatePath, templateName])
-            with open(templateFullFileName) as templateFile:
-                return Template(templateFile.read())
-        except IOError as e:
-            print('Error: operation failed: {}'.format(e.strerror))
+            template_full_filename = os.path.join(self.site_root, *[template_path, template_name])
+            with open(template_full_filename) as template_file:
+                return Template(template_file.read())
+        except IOError as err:
+            print('Error: operation failed: {}'.format(err.strerror))
 
     @staticmethod
-    def loadMetadata(filename):
+    def _load_metadata(filename):
         """"""
         try:
-            with open(filename, 'r') as fp:
-                metadata = yaml.load(fp)
-        except IOError as e:
-            print('Error: operation failed: {}'.format(e.strerror))
+            with open(filename, 'r') as metadata_file:
+                metadata = yaml.load(metadata_file)
+        except IOError as err:
+            print('Error: operation failed: {}'.format(err.strerror))
 
         return metadata
 
-    def formatContents(self, path, childrenNodes):
+    def _format_contents(self, path, children_nodes):
         """"""
         contents = []
-        for childNode in childrenNodes:
-            childName, childOptions = self.scanTree.parseNode(childNode)
-            if not childOptions['stop']:
-                path = path.replace(self.siteRoot, '')
-                link = os.path.join(path, childNode)
-                item = self.formatMarkdownLinkedItem(childNode, link)
+        for child_node in children_nodes:
+            child_name, child_options = self.scan_tree.parse_node(child_node)
+            if not child_options['stop']:
+                path = path.replace(self.site_root, '')
+                link = os.path.join(path, child_node)
+                item = self._format_markdown_linked_item(child_node, link)
             else:
-                item = childName
+                item = child_name
 
             contents.append(item)
 
         return contents
 
-    def formatMetadataListItems(self, path, rawItems):
+    def _format_metadata_list_items(self, path, raw_items):
         """"""
         items = []
-        for item in rawItems:
-            itemText = os.path.basename(item)
+        for item in raw_items:
+            item_text = os.path.basename(item)
             link = os.path.join(path, item)
-            formatedItem = self.formatMarkdownLinkedItem(itemText, link)
-            items.append(formatedItem)
+            formated_item = self._format_markdown_linked_item(item_text, link)
+            items.append(formated_item)
 
         return items
 
     @staticmethod
-    def formatMarkdownLinkedItem(item, link):
+    def _format_markdown_linked_item(item, link):
         """"""
-        linkURL = pathname2url(link)
-        item = '[{}]({})'.format(item, linkURL)
+        link_url = pathname2url(link)
+        item = '[{}]({})'.format(item, link_url)
 
         return item
 
-    def writeIndexFile(self, path, content):
+    def _write_index_file(self, path, content):
         """"""
-        indexFullFileName = os.path.join(path, self.navigationFileName)
+        index_full_filename = os.path.join(path, self.navigation_filename)
         try:
-            with open(indexFullFileName, 'a') as fo:
-                fo.write(content)
-        except IOError as e:
-            print('Error: Operation failed: {}'.format(e.strerror))
+            with open(index_full_filename, 'a') as index_file:
+                index_file.write(content)
+        except IOError as err:
+            print('Error: Operation failed: {}'.format(err.strerror))

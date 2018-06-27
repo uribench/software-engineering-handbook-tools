@@ -1,9 +1,14 @@
+"""
+'status' sub-command of the 'handbook' command.
+
+This module generates various status reports about the Handbook.
+"""
 import os
 import sys
 from lib.commandBase import CommandBase
 from lib.scanDirectoryTree import ScanDirectoryTree
 
-__version__ = '0.0.2'
+__version__ = '0.1.0'
 
 class Status(CommandBase):
     """
@@ -24,87 +29,87 @@ class Status(CommandBase):
       handbook.py status -o report.md
     """
 
-    def __init__(self, command_args={}, global_args={}):
+    def __init__(self, command_args=None, global_args=None):
         """"""
         super().__init__(command_args, global_args, version=__version__)
         # optional authored metadata YAML files for the navigation files
-        self.metadataPath = 'config/metadata/'
+        self.metadata_path = 'config/metadata/'
         # optional authored guide files
-        self.guidesPath = 'Guides/'
+        self.guides_path = 'Guides/'
         # optional authored topic files
-        self.topicsPath = 'Topics/'
+        self.topics_path = 'Topics/'
         # file extensions to look for
-        self.whiteList = ['.md', '.yml']
+        self.white_list = ['.md', '.yml']
         # file names to ignore
-        self.blackList = []
-        self.reportTitle = '# Status Report\n'
+        self.black_list = []
+        self.report_title = '# Status Report\n'
 
     def execute(self):
-        """Entry point for the execution of this sub-command."""
-        self.processArgs()
-        self.report = self.initOutputFile()
-        self.scanTree = ScanDirectoryTree(self.siteRoot)
-        taskQueue = [{'title': 'Metadata Files', 'rootPath': self.metadataPath},
-                     {'title': 'Guides Files', 'rootPath': self.guidesPath},
-                     {'title': 'Topics Files', 'rootPath': self.topicsPath}]
+        """Entry point for the execution of this sub-command"""
+        self._process_args()
+        self.report = self._init_output_file()
+        self.scan_tree = ScanDirectoryTree(self.site_root)
+        tasks_queue = [{'title': 'Metadata Files', 'root_path': self.metadata_path},
+                       {'title': 'Guides Files', 'root_path': self.guides_path},
+                       {'title': 'Topics Files', 'root_path': self.topics_path}]
         self.title = ''
-        self.authoredFilesCount = 0
-        for task in taskQueue:
-            rootPath = os.path.join(self.siteRoot, task['rootPath'])
-            self.scanTree.scan(rootPath, task['title'], self.nodePerformer)
+        self.authored_files_count = 0
+        for task in tasks_queue:
+            root_path = os.path.join(self.site_root, task['root_path'])
+            self.scan_tree.scan(root_path, task['title'], self.node_performer)
         self.report.write('\n\n  **Total Authored Files Count: {}**'. \
-                          format(self.authoredFilesCount))
+                          format(self.authored_files_count))
         self.report.close()
 
-    def processArgs(self):
-        """Process global_args and command_args."""
-        self.siteRoot = self.global_args['--root']
-        self.outputFile = self.args['--output']
-
-    def initOutputFile(self):
-        """"""
-        if self.outputFile is not None:
-            reportFullFileName = os.path.join(self.siteRoot, self.outputFile)
-            if os.path.exists(reportFullFileName):
-                print('Error: Report file already exists: {}'.format(reportFullFileName))
-                sys.exit()
-
-            fo = open(reportFullFileName, 'a')
-        else:
-            fo = sys.stdout
-
-        try:
-            fo.write(self.reportTitle)
-        except IOError as e:
-            print('Error: Operation failed: {}'.format(e.strerror))
-
-        return fo
-
-    def nodePerformer(self, path, title, fileList):
-        """"""
-        fileList = self.filterFiles(path, fileList)
-        shortPath = path.replace(self.siteRoot, '')
+    def node_performer(self, path, title, file_list):
+        """Custom performer executed for each visited node"""
+        file_list = self._filter_files(path, file_list)
+        short_path = path.replace(self.site_root, '')
         try:
             if title != self.title:
                 self.report.write('\n## {}\n\n'.format(title))
                 self.title = title
-            for file in fileList:
-                filePath = os.path.join(shortPath, file)
-                self.report.write('  - {}  \n'.format(filePath))
-                self.authoredFilesCount += 1
-        except IOError as e:
-            print('Error: Operation failed: {}'.format(e.strerror))
+            for file in file_list:
+                file_path = os.path.join(short_path, file)
+                self.report.write('  - {}  \n'.format(file_path))
+                self.authored_files_count += 1
+        except IOError as err:
+            print('Error: Operation failed: {}'.format(err.strerror))
 
-    def filterFiles(self, path, fileList):
+    def _process_args(self):
+        """Process global_args and command_args"""
+        self.site_root = self.global_args['--root']
+        self.output_filename = self.args['--output']
+
+    def _init_output_file(self):
         """"""
-        ignoreList = []
-        for fileName in fileList:
-            filePath = os.path.join(path, fileName)
-            if not os.path.isdir(filePath):
-                extension = os.path.splitext(fileName)[1]
-                if extension not in self.whiteList:
-                    ignoreList.append(fileName)
-            else:
-                ignoreList.append(fileName)
+        if self.output_filename is not None:
+            report_full_filename = os.path.join(self.site_root, self.output_filename)
+            if os.path.exists(report_full_filename):
+                print('Error: Report file already exists: {}'.format(report_full_filename))
+                sys.exit()
 
-        return list(set(fileList) - set(ignoreList + self.blackList))
+            report_file = open(report_full_filename, 'a')
+        else:
+            report_file = sys.stdout
+
+        try:
+            report_file.write(self.report_title)
+        except IOError as err:
+            print('Error: Operation failed: {}'.format(err.strerror))
+
+        return report_file
+
+    def _filter_files(self, path, file_list):
+        """"""
+        ignore_list = []
+        for filename in file_list:
+            file_path = os.path.join(path, filename)
+            if not os.path.isdir(file_path):
+                extension = os.path.splitext(filename)[1]
+                if extension not in self.white_list:
+                    ignore_list.append(filename)
+            else:
+                ignore_list.append(filename)
+
+        return list(set(file_list) - set(ignore_list + self.black_list))
