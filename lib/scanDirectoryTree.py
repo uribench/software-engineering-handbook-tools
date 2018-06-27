@@ -7,22 +7,22 @@ class ScanDirectoryTree:
     An external performer is executed for each visited node.
     """
 
-    def __init__(self, siteRoot):
+    def __init__(self, site_root):
         """"""
-        self.siteRoot = siteRoot
+        self.site_root = site_root
 
-    def scan(self, rootPath, title, nodePerformer):
+    def scan(self, root_path, title, node_performer):
         """Entry point for the scan of the directory tree"""
-        self.nodePerformer = nodePerformer
+        self.node_performer = node_performer
         self.title = title
-        self.scanTree(rootPath)
+        self._scan_tree(root_path)
 
-    def scanTree(self, path):
+    def _scan_tree(self, path):
         """Scan the provided directory tree recursively"""
-        fileList = os.listdir(path)
-        self.nodePerformer(path, self.title, fileList)
+        file_list = os.listdir(path)
+        self.node_performer(path, self.title, file_list)
 
-        for fileName in fileList:
-            filePath = os.path.join(path, fileName)
-            if os.path.isdir(filePath):
-                self.scanTree(filePath)
+        for filename in file_list:
+            file_path = os.path.join(path, filename)
+            if os.path.isdir(file_path):
+                self._scan_tree(file_path)
