@@ -10,9 +10,10 @@ from urllib.request import pathname2url
 from jinja2 import Template
 import yaml
 from lib.command_base import CommandBase
-from lib.config_navigation_tree import ConfigNavigationTree
+from lib.navigation_tree import NavigationTree
+from lib.navigation_tree_node import NavigationTreeNode
 
-__version__ = '1.1.2'
+__version__ = '1.1.3'
 
 class Build(CommandBase):
     """
@@ -46,12 +47,12 @@ class Build(CommandBase):
         # Jinja2 template file for the navigation files
         self.navigation_file_template = 'navigation-file-template.j2'
         self._process_args()
-        self.config_navigation_tree = None
+        self.navigation_tree = None
 
     def execute(self):
         """Entry point for the execution of this sub-command"""
-        self.config_navigation_tree = ConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
-        self.config_navigation_tree.scan(self.node_performer)
+        self.navigation_tree = NavigationTree(self.site_root, self.verbose, self.no_stop)
+        self.navigation_tree.scan(self.node_performer)
 
     def node_performer(self, root_path, root_options, root_children_nodes):
         """Custom performer executed for each visited node"""
@@ -122,14 +123,14 @@ class Build(CommandBase):
     def _format_contents(self, path, children_nodes):
         """"""
         contents = []
-        for child_node in children_nodes:
-            child_name, child_options = self.config_navigation_tree.parse_node(child_node)
-            if not child_options['stop']:
+        for node in children_nodes:
+            child_node = NavigationTreeNode(node)
+            if not child_node.options['stop']:
                 path = path.replace(self.site_root, '')
-                link = os.path.join(path, child_node)
-                item = self._format_markdown_linked_item(child_node, link)
+                link = os.path.join(path, child_node.name)
+                item = self._format_markdown_linked_item(child_node.name, link)
             else:
-                item = child_name
+                item = child_node.name
 
             contents.append(item)
 
