@@ -1,12 +1,12 @@
 """
-Traverse a directory tree.
+Represents the site directory tree.
 
-An external performer is executed for each visited node.
+When scanned, an external performer is executed for each visited node.
 """
 
 import os
 
-class ScanDirectoryTree:
+class DirectoryTree:
     """Traverse a directory tree"""
 
     def __init__(self, site_root):

@@ -8,9 +8,9 @@ import os
 import sys
 from urllib.request import pathname2url
 from lib.command_base import CommandBase
-from lib.scan_config_navigation_tree import ScanConfigNavigationTree
+from lib.config_navigation_tree import ConfigNavigationTree
 
-__version__ = '0.6.1'
+__version__ = '0.6.2'
 
 class Toc(CommandBase):
     """
@@ -51,12 +51,12 @@ class Toc(CommandBase):
         self.toc_file = self._init_output_file()
         self.depth = 0
         self.index = []
-        self.scan_tree = None
+        self.config_navigation_tree = None
 
     def execute(self):
         """Entry point for the execution of this sub-command"""
-        self.scan_tree = ScanConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
-        self.scan_tree.scan(self.node_performer)
+        self.config_navigation_tree = ConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
+        self.config_navigation_tree.scan(self.node_performer)
         self.toc_file.close()
 
     def node_performer(self, root_path, *_):

@@ -1,7 +1,7 @@
 """
-Scan the configuration navigation tree.
+Represents the configuration navigation tree.
 
-An external performer is executed for each visited node.
+When scanned, an external performer is executed for each visited node.
 """
 
 import os
@@ -9,8 +9,8 @@ import sys
 import re
 import yaml
 
-class ScanConfigNavigationTree:
-    """Scan the configuration navigation tree"""
+class ConfigNavigationTree:
+    """Represents the configuration navigation tree"""
 
     def __init__(self, site_root, verbose=False, no_stop=False):
         """"""

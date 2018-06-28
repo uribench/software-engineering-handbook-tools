@@ -6,9 +6,9 @@ This module generates various status reports about the Handbook.
 import os
 import sys
 from lib.command_base import CommandBase
-from lib.scan_directory_tree import ScanDirectoryTree
+from lib.directory_tree import DirectoryTree
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 class Status(CommandBase):
     """
@@ -47,17 +47,17 @@ class Status(CommandBase):
         self.report = self._init_output_file()
         self.group_title = ''
         self.authored_files_count = 0
-        self.scan_tree = None
+        self.directory_tree = None
 
     def execute(self):
         """Entry point for the execution of this sub-command"""
-        self.scan_tree = ScanDirectoryTree(self.site_root)
+        self.directory_tree = DirectoryTree(self.site_root)
         tasks_queue = [{'group_title': 'Metadata Files', 'root_path': self.metadata_path},
                        {'group_title': 'Guides Files', 'root_path': self.guides_path},
                        {'group_title': 'Topics Files', 'root_path': self.topics_path}]
         for task in tasks_queue:
             root_path = os.path.join(self.site_root, task['root_path'])
-            self.scan_tree.scan(root_path, task['group_title'], self.node_performer)
+            self.directory_tree.scan(root_path, task['group_title'], self.node_performer)
         self.report.write('\n\n  **Total Authored Files Count: {}**'. \
                           format(self.authored_files_count))
         self.report.close()
