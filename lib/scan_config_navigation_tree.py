@@ -1,14 +1,16 @@
+"""
+Scan the configuration navigation tree.
+
+An external performer is executed for each visited node.
+"""
+
 import os
 import sys
 import re
 import yaml
 
 class ScanConfigNavigationTree:
-    """
-    Scan the configuration navigation tree.
-
-    An external performer is executed for each visited node.
-    """
+    """Scan the configuration navigation tree"""
 
     def __init__(self, site_root, verbose=False, no_stop=False):
         """"""
@@ -20,6 +22,7 @@ class ScanConfigNavigationTree:
         self.navigation_path = 'config/navigation/'
         # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
         self.root_config_filename = 'root.yml'
+        self.node_performer = None
 
     def scan(self, node_performer):
         """Entry point for the scan of the configuration navigation tree"""

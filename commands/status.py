@@ -5,10 +5,10 @@ This module generates various status reports about the Handbook.
 """
 import os
 import sys
-from lib.commandBase import CommandBase
-from lib.scanDirectoryTree import ScanDirectoryTree
+from lib.command_base import CommandBase
+from lib.scan_directory_tree import ScanDirectoryTree
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 class Status(CommandBase):
     """
@@ -45,31 +45,31 @@ class Status(CommandBase):
         self.report_title = '# Status Report\n'
         self._process_args()
         self.report = self._init_output_file()
-        self.title = ''
+        self.group_title = ''
         self.authored_files_count = 0
         self.scan_tree = None
 
     def execute(self):
         """Entry point for the execution of this sub-command"""
         self.scan_tree = ScanDirectoryTree(self.site_root)
-        tasks_queue = [{'title': 'Metadata Files', 'root_path': self.metadata_path},
-                       {'title': 'Guides Files', 'root_path': self.guides_path},
-                       {'title': 'Topics Files', 'root_path': self.topics_path}]
+        tasks_queue = [{'group_title': 'Metadata Files', 'root_path': self.metadata_path},
+                       {'group_title': 'Guides Files', 'root_path': self.guides_path},
+                       {'group_title': 'Topics Files', 'root_path': self.topics_path}]
         for task in tasks_queue:
             root_path = os.path.join(self.site_root, task['root_path'])
-            self.scan_tree.scan(root_path, task['title'], self.node_performer)
+            self.scan_tree.scan(root_path, task['group_title'], self.node_performer)
         self.report.write('\n\n  **Total Authored Files Count: {}**'. \
                           format(self.authored_files_count))
         self.report.close()
 
-    def node_performer(self, path, title, file_list):
+    def node_performer(self, path, group_title, file_list):
         """Custom performer executed for each visited node"""
         file_list = self._filter_files(path, file_list)
         short_path = path.replace(self.site_root, '')
         try:
-            if title != self.title:
-                self.report.write('\n## {}\n\n'.format(title))
-                self.title = title
+            if group_title != self.group_title:
+                self.report.write('\n## {}\n\n'.format(group_title))
+                self.group_title = group_title
             for file in file_list:
                 file_path = os.path.join(short_path, file)
                 self.report.write('  - {}  \n'.format(file_path))
