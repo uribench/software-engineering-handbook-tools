@@ -9,10 +9,10 @@ import sys
 from urllib.request import pathname2url
 from jinja2 import Template
 import yaml
-from lib.commandBase import CommandBase
-from lib.scanConfigNavigationTree import ScanConfigNavigationTree
+from lib.command_base import CommandBase
+from lib.scan_config_navigation_tree import ScanConfigNavigationTree
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 class Build(CommandBase):
     """
