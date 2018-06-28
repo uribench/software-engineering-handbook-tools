@@ -10,9 +10,9 @@ from urllib.request import pathname2url
 from jinja2 import Template
 import yaml
 from lib.command_base import CommandBase
-from lib.scan_config_navigation_tree import ScanConfigNavigationTree
+from lib.config_navigation_tree import ConfigNavigationTree
 
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 class Build(CommandBase):
     """
@@ -46,12 +46,12 @@ class Build(CommandBase):
         # Jinja2 template file for the navigation files
         self.navigation_file_template = 'navigation-file-template.j2'
         self._process_args()
-        self.scan_tree = None
+        self.config_navigation_tree = None
 
     def execute(self):
         """Entry point for the execution of this sub-command"""
-        self.scan_tree = ScanConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
-        self.scan_tree.scan(self.node_performer)
+        self.config_navigation_tree = ConfigNavigationTree(self.site_root, self.verbose, self.no_stop)
+        self.config_navigation_tree.scan(self.node_performer)
 
     def node_performer(self, root_path, root_options, root_children_nodes):
         """Custom performer executed for each visited node"""
@@ -123,7 +123,7 @@ class Build(CommandBase):
         """"""
         contents = []
         for child_node in children_nodes:
-            child_name, child_options = self.scan_tree.parse_node(child_node)
+            child_name, child_options = self.config_navigation_tree.parse_node(child_node)
             if not child_options['stop']:
                 path = path.replace(self.site_root, '')
                 link = os.path.join(path, child_node)
