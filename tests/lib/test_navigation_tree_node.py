@@ -1,54 +1,35 @@
 """Tests of the NavigationTreeNode class"""
 
+import pytest
 from lib.navigation_tree_node import NavigationTreeNode
 
-def test_node_name():
-    node_strings = [['Node Name', 'node-name'],
-                    ['Node  Name', 'node-name'],
-                    ['Node_Name', 'node_name'],
-                    ['Node -Name', 'node-name'],
-                    ['Node --Name', 'node-name'],
-                    ['Node.Name', 'node.name'],
-                    ['Node(Name)', 'node(name)'],
-                    ['Node (Name)', 'node-(name)'],
-                    ['   Node Name  ', 'node-name']]
-    
-    for node_string in node_strings:
-       check_node_name(*node_string) 
-
-def check_node_name(node_string, expected_name):
+@pytest.mark.parametrize('node_string, expected_name', [
+    ('Node Name', 'node-name'),
+    ('Node   Name', 'node-name'),
+    ('  Node Name  ', 'node-name'),
+    ('Node_Name', 'node_name'),
+    ('Node -Name', 'node-name'),
+    ('Node --Name', 'node-name'),
+    ('Node.Name', 'node.name'),
+    ('Node (Name)', 'node-(name)'),
+    ('Node %#$Name=+*&', 'node-name'),
+])
+def test_default_id_tag(node_string, expected_name):
     node = NavigationTreeNode(node_string)
     assert node.options['id'] == expected_name
 
-def test_node_name_and_stop_tag():
-    node = NavigationTreeNode('node name @stop')
-    assert node.name == 'node name'
-    assert node.tags[0] == '@stop'
-    assert node.options['stop']
-
-def test_node_name_and_default_id_tag():
-    node = NavigationTreeNode('  Node   Name  ')
-    assert node.name == 'Node   Name'
-    assert node.default_id == 'node-name'
-
-def test_node_name_and_multiple_tags_with_default_values():
-    node_strings = ['Node Name @stop @include @id',
-                    'Node Name @stop   @include @id',
-                    'Node Name  @stop @include  @id',
-                    'Node Name @include @id @stop',
-                    '   Node Name  @include @id @stop']
-    
-    for node_string in node_strings:
-       check_node_name_and_multiple_tags_with_default_values(node_string) 
-
-def check_node_name_and_multiple_tags_with_default_values(node_string):
+@pytest.mark.parametrize('node_string, expected_stop, expected_id, expected_include', [
+    ('Node Name @stop', True, 'node-name', None),
+    ('Node Name @stop @include @id', True, 'node-name', 'node-name'),
+    ('Node Name @id @stop @include ', True, 'node-name', 'node-name'),
+    ('Node Name @include @id', False, 'node-name', 'node-name'),
+    ('Node Name', False, 'node-name', None),
+    ('Node Name @stop @include @id=custom-id', True, 'custom-id', 'node-name'),
+    ('Node Name @stop @include=custom-include @id', True, 'node-name', 'custom-include'),
+])
+def test_multiple_tags(node_string, expected_stop, expected_include, expected_id):
     node = NavigationTreeNode(node_string)
-    assert node.name == 'Node Name'
-    assert node.default_id == 'node-name'
-    assert node.options['stop']
-    assert node.options['include'] == 'node-name'
-    assert node.options['id'] == 'node-name'
-
-def test_node_custome_id():
-    node = NavigationTreeNode('Node Name @id=custom-node-name')
-    assert node.options['id'] == 'custom-node-name'
+    assert node.options['stop'] == expected_stop
+    assert node.options['id'] == expected_id
+    if expected_include is not None:
+        assert node.options['include'] == expected_include
