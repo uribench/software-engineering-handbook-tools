@@ -14,7 +14,7 @@ from lib.navigation_tree_node import NavigationTreeNode
     ('Node (Name)', 'node-(name)'),
     ('Node %#$Name=+*&', 'node-name'),
 ])
-def test_default_id_tag(node_string, expected_name):
+def test_sets_default_id_tag(node_string, expected_name):
     node = NavigationTreeNode(node_string)
     assert node.options['id'] == expected_name
 
@@ -27,7 +27,7 @@ def test_default_id_tag(node_string, expected_name):
     ('Node Name @stop @include @id=custom-id', True, 'custom-id', 'node-name'),
     ('Node Name @stop @include=custom-include @id', True, 'node-name', 'custom-include'),
 ])
-def test_multiple_tags(node_string, expected_stop, expected_include, expected_id):
+def test_sets_multiple_tags(node_string, expected_stop, expected_include, expected_id):
     node = NavigationTreeNode(node_string)
     assert node.options['stop'] == expected_stop
     assert node.options['id'] == expected_id

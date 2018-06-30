@@ -60,7 +60,9 @@ class Status(CommandBase):
             self.directory_tree.scan(root_path, task['group_title'], self.node_performer)
         self.report.write('\n\n  **Total Authored Files Count: {}**'. \
                           format(self.authored_files_count))
-        self.report.close()
+
+        if self.report is not sys.stdout:
+            self.report.close()
 
     def node_performer(self, path, group_title, file_list):
         """Custom performer executed for each visited node"""

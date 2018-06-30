@@ -57,7 +57,9 @@ class Toc(CommandBase):
         """Entry point for the execution of this sub-command"""
         self.navigation_tree = NavigationTree(self.site_root, self.verbose, self.no_stop)
         self.navigation_tree.scan(self.node_performer)
-        self.toc_file.close()
+        
+        if self.toc_file is not sys.stdout:
+            self.toc_file.close()
 
     def node_performer(self, root_path, *_):
         """Custom performer executed for each visited node"""

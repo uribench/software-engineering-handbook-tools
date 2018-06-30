@@ -1,10 +1,9 @@
 """Tests of the dispatcher for commands maintaining the Software Engineering Handbook"""
 
+import pytest
 from subprocess import Popen, PIPE
 
-def test_returns_usage_information():
-    output = Popen(['./handbook.py', '-h'], stdout=PIPE).communicate()[0]
-    assert b'Usage:' in output
-
-    output = Popen(['./handbook.py', '--help'], stdout=PIPE).communicate()[0]
+@pytest.fixture(params=['-h', '--help'])
+def test_prints_usage_information(request):
+    output = Popen(['./handbook.py', request.params], stdout=PIPE).communicate()[0]
     assert b'Usage:' in output
