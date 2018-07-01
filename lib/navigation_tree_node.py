@@ -34,6 +34,14 @@ class NavigationTreeNode:
 
     def _get_node_options(self, tags, name):
         """"""
+        node_options = self._get_node_explicit_options(tags)
+        node_options = self._set_node_default_options(node_options, name)
+
+        return node_options
+
+    @staticmethod
+    def _get_node_explicit_options(tags):
+        """"""
         # parse explicit arguments
         valid_keys = ['id', 'include', 'stop']
         node_options = {}
@@ -48,6 +56,10 @@ class NavigationTreeNode:
                 print('Error: Unknown argument: {}'.format(options_match.group('k')))
                 sys.exit()
 
+        return node_options
+
+    def _set_node_default_options(self, node_options, name):
+        """"""
         # set defaults
         node_options['stop'] = True if 'stop' in node_options else False
         if 'id' not in node_options or node_options['id'] == '':

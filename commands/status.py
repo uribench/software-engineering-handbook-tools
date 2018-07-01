@@ -87,15 +87,15 @@ class Status(CommandBase):
 
     def _init_output_file(self):
         """"""
-        if self.output_filename is not None:
+        if self.output_filename is None:
+            report_file = sys.stdout
+        else:
             report_full_filename = os.path.join(self.site_root, self.output_filename)
             if os.path.exists(report_full_filename):
                 print('Error: Report file already exists: {}'.format(report_full_filename))
                 sys.exit()
 
             report_file = open(report_full_filename, 'a')
-        else:
-            report_file = sys.stdout
 
         try:
             report_file.write(self.report_title)
@@ -109,11 +109,11 @@ class Status(CommandBase):
         ignore_list = []
         for filename in file_list:
             file_path = os.path.join(path, filename)
-            if not os.path.isdir(file_path):
+            if os.path.isdir(file_path):
+                ignore_list.append(filename)
+            else:
                 extension = os.path.splitext(filename)[1]
                 if extension not in self.white_list:
                     ignore_list.append(filename)
-            else:
-                ignore_list.append(filename)
 
         return list(set(file_list) - set(ignore_list + self.black_list))

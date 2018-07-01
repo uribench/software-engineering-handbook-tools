@@ -85,15 +85,15 @@ class Toc(CommandBase):
 
     def _init_output_file(self):
         """"""
-        if self.output_file is not None:
+        if self.output_file is None:
+            toc_file = sys.stdout
+        else:
             toc_full_filename = os.path.join(self.site_root, self.output_file)
             if os.path.exists(toc_full_filename):
                 print('Error: TOC file already exists: {}'.format(toc_full_filename))
                 sys.exit()
 
             toc_file = open(toc_full_filename, 'a')
-        else:
-            toc_file = sys.stdout
 
         try:
             if self.include_toc_header:
