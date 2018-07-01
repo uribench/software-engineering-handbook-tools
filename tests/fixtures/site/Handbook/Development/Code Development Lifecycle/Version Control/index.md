@@ -3,7 +3,7 @@
 ## Contents
 
 - Tools
-- [Git](/Handbook/Development/Code%20Development%20Lifecycle/Version%20Control/Git)
+- [Git](Handbook/Development/Code%20Development%20Lifecycle/Version%20Control/Git)
 - SVN
 - TFS
 - CVS

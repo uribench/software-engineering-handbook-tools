@@ -2,7 +2,7 @@
 
 ## Contents
 
-- [Code Quality](/Handbook/Coding/Code%20Quality)
+- [Code Quality](Handbook/Coding/Code%20Quality)
 - Development Models
 - Design patterns
 - Polyglotism
@@ -10,7 +10,7 @@
 - Anonymous methods and lambda expressions
 - Developing an Interpreter
 - Frameworks and Libraries
-- [Ecosystem-Community-Open Source](/Handbook/Coding/Ecosystem-Community-Open%20Source)
+- [Ecosystem-Community-Open Source](Handbook/Coding/Ecosystem-Community-Open%20Source)
 - Common Standards
 - Web Development
 - Security
