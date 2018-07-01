@@ -8,7 +8,7 @@ import sys
 from lib.command_base import CommandBase
 from lib.directory_tree import DirectoryTree
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 class Status(CommandBase):
     """
@@ -23,9 +23,10 @@ class Status(CommandBase):
       -o, --output=FILE     specify output report file relative to site root
 
     Examples:
-      handbook.py status
       handbook.py status -h
       handbook.py status --version
+      handbook.py status
+      handbook.py --root=tests/fixtures/site status
       handbook.py status -o report.md
     """
 
@@ -81,7 +82,7 @@ class Status(CommandBase):
 
     def _process_args(self):
         """Process global_args and command_args"""
-        self.site_root = self.global_args['--root']
+        # default values not set by docopt were set in CommandBase
         self.output_filename = self.args['--output']
 
     def _init_output_file(self):

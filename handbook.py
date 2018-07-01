@@ -12,16 +12,27 @@ Options:
   -h, --help        show this help message and exit
   -v, --version     show the version and exit
   --verbose         print warning messages
-  --root=PATH       site root [default: tests/fixtures/site]
+  --root=PATH       site root
 
 Commands:
 {commands}
 
 Examples:
-  handbook.py some-command
   handbook.py -h
   handbook.py some-command -h
   handbook.py some-command --version
+  handbook.py some-command
+  handbook.py --root=tests/fixtures/site some-command
+
+Environment:
+  The location of the root of the Software Engineering HandbookWhen is determined
+  using the following process:
+    If no value is provided for the '--root' option, then the value of $HANDBOOK_ROOT
+    environment variable is used when such exists. Otherwise the program terminates and
+    the user is notified accordingly.
+  Set the $HANDBOOK_ROOT environment variable based on the structure of your file system.
+  By default, this repository uses 'direnv' configuration file (.envrc) with:
+    export HANDBOOK_ROOT=../software-engineering-handbook
 """
 
 import sys
@@ -29,7 +40,7 @@ import pkgutil
 from docopt import docopt
 from docopt import DocoptExit
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 def main():
     """Program entry point"""
