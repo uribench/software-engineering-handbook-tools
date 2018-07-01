@@ -10,7 +10,7 @@ from urllib.request import pathname2url
 from lib.command_base import CommandBase
 from lib.navigation_tree import NavigationTree
 
-__version__ = '0.6.3'
+__version__ = '0.6.4'
 
 class Toc(CommandBase):
     """
@@ -31,9 +31,10 @@ class Toc(CommandBase):
       --header              include HTML header for the TOC file
 
     Examples:
-      handbook.py toc
       handbook.py toc -h
       handbook.py toc --version
+      handbook.py toc
+      handbook.py --root=tests/fixtures/site toc
       handbook.py toc -d 3
       handbook.py toc --depth=3 --no-index
       handbook.py toc --d 2 --no-index --no-link -o TOC2.md
@@ -73,8 +74,7 @@ class Toc(CommandBase):
 
     def _process_args(self):
         """Process global_args and command_args"""
-        self.site_root = self.global_args['--root']
-        self.verbose = self.global_args['--verbose']
+        # default values not set by docopt were set in CommandBase
         self.output_file = self.args['--output']
         self.max_depth = int(self.args['--depth'])
         self.no_stop = self.args['--no-stop']

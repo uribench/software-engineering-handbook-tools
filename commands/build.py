@@ -13,7 +13,7 @@ from lib.command_base import CommandBase
 from lib.navigation_tree import NavigationTree
 from lib.navigation_tree_node import NavigationTreeNode
 
-__version__ = '1.1.3'
+__version__ = '1.1.4'
 
 class Build(CommandBase):
     """
@@ -28,9 +28,10 @@ class Build(CommandBase):
       --no-stop         ignore 'stop' tags to scan the entire tree
 
     Examples:
-      handbook.py build
       handbook.py build -h
       handbook.py build --version
+      handbook.py build
+      handbook.py --root=tests/fixtures/site build
       handbook.py build --no-stop
     """
 
@@ -62,8 +63,7 @@ class Build(CommandBase):
 
     def _process_args(self):
         """Process global_args and command_args"""
-        self.site_root = self.global_args['--root']
-        self.verbose = self.global_args['--verbose']
+        # default values not set by docopt were set in CommandBase
         self.no_stop = self.args['--no-stop']
 
     @staticmethod
