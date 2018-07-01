@@ -1,0 +1,5 @@
+language: python
+python:
+  - "3.5.2"
+script:
+  - pytest --cov-report term-missing --cov=.
