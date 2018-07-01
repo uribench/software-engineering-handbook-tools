@@ -5,7 +5,7 @@ from commands.status import Status
 
 def test_prints_status_report(capsys):
     status = Status(global_args={'--verbose': True, 
-                                 '--root': '../software-engineering-handbook'})
+                                 '--root': 'tests/fixtures/site'})
     status.execute()
     out, err = capsys.readouterr()
     assert '# Status Report' in out

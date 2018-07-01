@@ -12,7 +12,7 @@ Options:
   -h, --help        show this help message and exit
   -v, --version     show the version and exit
   --verbose         print warning messages
-  --root=PATH       site root [default: ../software-engineering-handbook]
+  --root=PATH       site root [default: tests/fixtures/site]
 
 Commands:
 {commands}

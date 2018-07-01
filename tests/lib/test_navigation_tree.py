@@ -5,7 +5,7 @@ from lib.navigation_tree import NavigationTree
 
 @pytest.fixture
 def navigation_tree():
-    return NavigationTree('../software-engineering-handbook')
+    return NavigationTree('tests/fixtures/site')
 
 def test_raises_exception_on_non_existing_configuration_file(navigation_tree):
     navigation_tree.root_config_filename = 'non_existing_file.yml'

@@ -1,0 +1,155 @@
+Handbook:
+  - Development:
+    - Development Environment and Tools:
+      - Environment Setup:
+        - Vagrant and VirtualBox
+      - Automation Scripts @stop
+      - Common File Formats @stop:
+        - YAML
+        - JSON
+        - Markdown
+        - XML
+      - Time Management @stop
+      - Editors @stop:
+        - Sublime
+        - Atom
+      - IDEs @stop:
+        - Visual Studio
+        - MonoDevelop
+        - Eclipse
+        - IntelliJ
+        - NetBeans
+      - Diff and Merge Tools @stop:
+        - DiffMerge
+        - WinMerge
+      - Linux skillset @stop
+      - Developing with Docker @stop:
+        - Docker concepts
+        - Docker Compose
+      - Choosing the right language @stop
+    - Code Development Lifecycle:
+      - Documenting @stop:
+        - Principles and Frameworks
+        - Lightweight Markup Languages
+        - Mind Mapping Tools
+      - Version Control:
+        - Tools @stop
+        - Git
+        - SVN @stop
+        - TFS @stop
+        - CVS @stop
+        - Perforce @stop
+        - How to write commit messages and release notes @stop
+      - Testing @stop:
+        - Unit Test
+        - Integration and System Test
+        - Performance and Memory check (Big O)
+        - Test Code Coverage check
+        - Load and stress tests
+        - Static Analysis
+        - Effective Peer Code Review
+        - Root cause analysis
+        - Effective problem solving - Debugging Mindset
+      - Continuous Integration (CI) @stop:
+        - TravisCI
+        - CircleCI
+        - Jenkins
+      - Testing with Docker @stop
+    - Software Development Processes @stop
+  - Production @stop:
+    - Deployment Management:
+      - Virtualization
+      - Containerization:
+        - Deploying with Docker
+        - Docker orchestration
+      - Automation:
+        - Ansible
+        - Puppet
+        - Chef
+        - Terraform
+      - Build Servers:
+        - Jenkins
+      - Deployment workflows:
+        - Using a staging environment
+        - Green-Blue deployments
+      - Production tests (Acceptance-Smoke-Sanity)
+      - Continuous Deployment-Delivery (CD)
+    - DevOps:
+      - Building a solid infrastructure (monitoring, alerting, logging)
+      - High Availability
+      - Auto Scaling
+    - NOC (Network Operation Center)
+  - Coding:
+    - Code Quality:
+      - General Coding Best Practices @stop
+      - Optimization and Refactoring @stop
+      - Clean Code and Code Smells:
+        - General Overview @stop
+        - Common Smells - Patterns and Remedies @stop
+        - Clean Design
+      - Software quality metrics @stop
+    - Development Models @stop:
+      - Test First Approaches:
+        - Principles
+        - Hands on practices
+        - Supporting Frameworks
+      - Code Composition:
+        - Principles
+        - IoC, DIP, DI:
+          - Frameworks:
+            - MEF
+            - Unity
+        - Composite Applications:
+          - Principles (Vertical Concerns)
+          - Frameworks:
+            - Microsoft PRISM
+      - Domain Specific Language (DSL) Based Development Model:
+        - Internal vs External DSL
+        - Externalization of code
+        - Supporting Frameworks
+      - Defensive Programming
+    - Design patterns @stop
+    - Polyglotism @stop:
+      - Side-by-side languages clusters syntax comparisons
+    - Regular Expressions - Syntax, Patterns and Tools @stop
+    - Anonymous methods and lambda expressions @stop
+    - Developing an Interpreter @stop
+    - Frameworks and Libraries @stop
+    - Ecosystem-Community-Open Source:
+      - Repository Hosting Services:
+        - GitHub
+        - BitBucket @stop
+      - How to choose an open source license @stop
+    - Common Standards @stop:
+      - Coding style standards
+      - Medical Domain Specific Standards:
+        - DICOM
+        - HLStandards
+    - Web Development @stop:
+      - Web Development Toolkits:
+        - UI Toolkit:
+          - Bootstrap
+          - Foundation
+          - Kendo UI
+          - Material UI
+        - UI Frameworks:
+          - Angular
+          - React
+          - Vue
+        - Testing Libraries:
+          - Mocha.js
+          - Jasmine
+          - QUnit
+        - Validators:
+          - W3C website Validator
+    - Security @stop
+    - Databases @stop
+  - Soft Skills (The Human Factor) @stop:
+    - How to effectively interact with other people
+    - Difficult Conversations
+    - Effective Communications with Teams
+    - Effective Communications with Managers
+    - Global Cultural Differences
+    - Influencing without being judgmental
+    - How to interview (skill testing):
+      - TestDome.com
