@@ -3,20 +3,20 @@
 import pytest
 from lib.navigation_tree_node import NavigationTreeNode
 
-@pytest.mark.parametrize('node_string, expected_name', [
-    ('Node Name', 'node-name'),
-    ('Node   Name', 'node-name'),
-    ('  Node Name  ', 'node-name'),
-    ('Node_Name', 'node_name'),
-    ('Node -Name', 'node-name'),
-    ('Node --Name', 'node-name'),
-    ('Node.Name', 'node.name'),
-    ('Node (Name)', 'node-(name)'),
-    ('Node %#$Name=+*&', 'node-name'),
-])
-def test_sets_default_id_tag(node_string, expected_name):
-    node = NavigationTreeNode(node_string)
-    assert node.options['id'] == expected_name
+def get_id(node_name):
+    return NavigationTreeNode(node_name).options['id']
+
+def test_trims_spaces():
+    assert get_id('  Node  Name  ') == 'node-name'
+
+def test_removes_consecutive_dashes():
+    assert get_id('Node --Name') == 'node-name'
+
+def test_removes_special_characters():
+    assert get_id('Node %#$Name=+*&') == 'node-name'
+
+def test_preserves_valid_characters():
+    assert get_id('Node._(Name)') == 'node._(name)'
 
 @pytest.mark.parametrize('node_string, expected_stop, expected_id, expected_include', [
     ('Node Name @stop', True, 'node-name', None),
