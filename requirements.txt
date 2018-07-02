@@ -2,7 +2,7 @@ docopt==0.6.2
 PyYAML==3.11
 Jinja2==2.8
 pylint==1.9.2
-coverage==4.5.1
+coverage==4.3
 pytest==3.6.2
 pytest-cov==2.5.1
 codeclimate-test-reporter==0.2.3
