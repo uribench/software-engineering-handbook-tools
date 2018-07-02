@@ -5,3 +5,4 @@ python:
   - "3.5.2"
 script:
   - pytest --cov-report term-missing --cov=.
+  - codeclimate-test-reporter --file .coverage
