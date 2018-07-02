@@ -39,31 +39,54 @@ class NavigationTreeNode:
 
         return node_options
 
-    @staticmethod
-    def _get_node_explicit_options(tags):
+    def _get_node_explicit_options(self, tags):
         """"""
-        # parse explicit arguments
-        valid_keys = ['id', 'include', 'stop']
         node_options = {}
         options_pattern = re.compile(r'@(?P<k>[a-z]+)=?(?P<v>.*)')
         for tag in tags:
             options_match = options_pattern.match(tag)
             if options_match is None:
                 continue
-            if options_match.group('k') in valid_keys:
-                node_options.update({options_match.group('k') : options_match.group('v')})
-            else:
-                print('Error: Unknown argument: {}'.format(options_match.group('k')))
-                sys.exit()
+
+            key, value = self._get_node_explicit_single_option(options_match, 'k', 'v')
+            node_options.update({key : value})
 
         return node_options
 
+    @staticmethod
+    def _get_node_explicit_single_option(options_match, key_group_tag, value_group_tag):
+        """"""
+        valid_keys = ['id', 'include', 'stop']
+        if options_match.group('k') not in valid_keys:
+            print('Error: Unknown node argument: {}'.format(options_match.group('k')))
+            sys.exit()
+
+        key = options_match.group(key_group_tag)
+        value = options_match.group(value_group_tag)
+
+        return key, value
+
     def _set_node_default_options(self, node_options, name):
         """"""
-        # set defaults
+        node_options = self._set_node_default_stop_option(node_options)
+        node_options = self._set_node_default_id_option(node_options, name)
+        node_options = self._set_node_default_include_option(node_options, name)
+
+        return node_options
+
+    @staticmethod
+    def _set_node_default_stop_option(node_options):
         node_options['stop'] = True if 'stop' in node_options else False
+
+        return node_options
+
+    def _set_node_default_id_option(self, node_options, name):
         if 'id' not in node_options or node_options['id'] == '':
             node_options['id'] = self._node_name_to_node_default_id(name)
+
+        return node_options
+
+    def _set_node_default_include_option(self, node_options, name):
         if 'include' in node_options and node_options['include'] == '':
             node_options['include'] = self._node_name_to_node_default_id(name)
 
