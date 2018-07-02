@@ -8,7 +8,7 @@ import sys
 from lib.command_base import CommandBase
 from lib.directory_tree import DirectoryTree
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 class Status(CommandBase):
     """
@@ -46,6 +46,12 @@ class Status(CommandBase):
         self.report_title = '# Status Report\n'
         self._process_args()
         self.report = self._init_output_file()
+
+        try:
+            self.report.write(self.report_title)
+        except IOError as err:
+            print('Error: Operation failed: {}'.format(err.strerror))
+
         self.group_title = ''
         self.authored_files_count = 0
         self.directory_tree = None
@@ -59,8 +65,12 @@ class Status(CommandBase):
         for task in tasks_queue:
             root_path = os.path.join(self.site_root, task['root_path'])
             self.directory_tree.scan(root_path, task['group_title'], self.node_performer)
-        self.report.write('\n\n  **Total Authored Files Count: {}**'. \
+
+        try:
+            self.report.write('\n\n  **Total Authored Files Count: {}**'. \
                           format(self.authored_files_count))
+        except IOError as err:
+            print('Error: Operation failed: {}'.format(err.strerror))
 
         if self.report is not sys.stdout:
             self.report.close()
@@ -69,6 +79,7 @@ class Status(CommandBase):
         """Custom performer executed for each visited node"""
         file_list = self._filter_files(path, file_list)
         short_path = path.replace(self.site_root, '')
+
         try:
             if group_title != self.group_title:
                 self.report.write('\n## {}\n\n'.format(group_title))
@@ -84,25 +95,6 @@ class Status(CommandBase):
         """Process global_args and command_args"""
         # default values not set by docopt were set in CommandBase
         self.output_filename = self.args['--output']
-
-    def _init_output_file(self):
-        """"""
-        if self.output_filename is None:
-            report_file = sys.stdout
-        else:
-            report_full_filename = os.path.join(self.site_root, self.output_filename)
-            if os.path.exists(report_full_filename):
-                print('Error: Report file already exists: {}'.format(report_full_filename))
-                sys.exit()
-
-            report_file = open(report_full_filename, 'a')
-
-        try:
-            report_file.write(self.report_title)
-        except IOError as err:
-            print('Error: Operation failed: {}'.format(err.strerror))
-
-        return report_file
 
     def _filter_files(self, path, file_list):
         """"""

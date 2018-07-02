@@ -10,7 +10,7 @@ from urllib.request import pathname2url
 from lib.command_base import CommandBase
 from lib.navigation_tree import NavigationTree
 
-__version__ = '0.6.4'
+__version__ = '0.6.5'
 
 class Toc(CommandBase):
     """
@@ -50,6 +50,14 @@ class Toc(CommandBase):
         self.markdown_ul = '-'
         self._process_args()
         self.toc_file = self._init_output_file()
+
+        try:
+            if self.include_toc_header:
+                self.toc_file.write(self.toc_header)
+            self.toc_file.write(self.toc_title)
+        except IOError as err:
+            print('Error: Operation failed: {}'.format(err.strerror))
+
         self.depth = 0
         self.index = []
         self.navigation_tree = None
@@ -75,34 +83,13 @@ class Toc(CommandBase):
     def _process_args(self):
         """Process global_args and command_args"""
         # default values not set by docopt were set in CommandBase
-        self.output_file = self.args['--output']
+        self.output_filename = self.args['--output']
         self.max_depth = int(self.args['--depth'])
         self.no_stop = self.args['--no-stop']
         self.include_prefix = not self.args['--no-prefix']
         self.include_index = not self.args['--no-index']
         self.include_link = not self.args['--no-link']
         self.include_toc_header = self.args['--header']
-
-    def _init_output_file(self):
-        """"""
-        if self.output_file is None:
-            toc_file = sys.stdout
-        else:
-            toc_full_filename = os.path.join(self.site_root, self.output_file)
-            if os.path.exists(toc_full_filename):
-                print('Error: TOC file already exists: {}'.format(toc_full_filename))
-                sys.exit()
-
-            toc_file = open(toc_full_filename, 'a')
-
-        try:
-            if self.include_toc_header:
-                toc_file.write(self.toc_header)
-            toc_file.write(self.toc_title)
-        except IOError as err:
-            print('Error: Operation failed: {}'.format(err.strerror))
-
-        return toc_file
 
     def _update_index_counter(self, link):
         """"""

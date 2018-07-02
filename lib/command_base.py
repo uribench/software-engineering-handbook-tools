@@ -71,3 +71,17 @@ class CommandBase:
             sys.exit()
 
         return os.environ[environ_variable]
+
+    def _init_output_file(self):
+        """"""
+        if self.output_filename is None:
+            output_file = sys.stdout
+        else:
+            output_full_filename = os.path.join(self.site_root, self.output_filename)
+            if os.path.exists(output_full_filename):
+                print('Error: Output file already exists: {}'.format(output_full_filename))
+                sys.exit()
+
+            output_file = open(output_full_filename, 'a')
+
+        return output_file
