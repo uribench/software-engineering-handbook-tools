@@ -2,7 +2,11 @@ os: linux
 dist: trusty
 language: python
 python:
-  - "3.5.2"
+- 3.5.2
 script:
-  - pytest --cov-report term-missing --cov=.
-  - codeclimate-test-reporter --file .coverage
+- pytest --cov-report term-missing --cov=.
+- codeclimate-test-reporter --file .coverage
+addons:
+  code_climate:
+    repo_token:
+      secure: b8PjutOPS65p0fi2She+BkDhSOutwg+87+gLhcFhJ557I+xnt/B0zSaoopXpL9eQNgMiYOm6lCx+qkaQJJYQRuMT3owrO5sfTFbl41PF/U2Hmi/qY5LpJ7ybk4Mv61FGcyxawmmRXN6XJqStxQa3+yKH4BFjy7ZRtkjMPSf2FwoKkpkE44gf6iYBMhLdJHwegdPR2aPiQgK3aSSBgObPjkVSsTQCuLKyAjSn/+Wut0m6OV84vU1Saw7qpsjbT23BfNjAgB4zdjXnePYwAMdFJBpchRuoA7HpE8xWiMlGzgIaLIStMV3/L+yDKBCCDwSMn9W+JD197pP+AOrtr7DjAJGs6k1b9USaAE+T9NC+0GVnDfKpiYc0qHZ6KokCgqQdkyjAN8WGO5iJwj6nJnNqBHWJ3fhKcDKjXMPuF7dtaST3E5v3jzr2W4p3y3nibIolcrNpY2JnoXQYuE1I4S5UhJ7bg+gWt3vbWMSs9urEsl0EEWYyhfuCGwWaMsZ8Ng5wXAgCp25BclF4u/zg5d/SJdhBsn3pllsSgfY3LV0Bb/qLjMpP2oA35scedmdll+zqdYrXoy60TEX8Po0v73fkRXLiY+VoGaZ1hmQ8LBFBSfSLY2AhHPEseFaESQXGqkrAqSc6WRi/IaCW+y1E9ju5sZl/UEFLT6lXnVvwo4XDKJY=
