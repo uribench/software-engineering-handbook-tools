@@ -27,10 +27,7 @@ class CommandBase:
 
         self.global_args = global_args
         self.verbose = self.global_args['--verbose']
-        self.site_root = self.global_args['--root']
-
-        if self.site_root is None:
-            self._set_default_site_root('HANDBOOK_ROOT')
+        self.site_root = self._set_site_root(self.global_args['--root'])
 
         # parse the combined arguments from command's 'docstring' and passed command_args
         self.args = docopt(self.__doc__, version=version, argv=command_args)
@@ -50,13 +47,27 @@ class CommandBase:
 
         return summary
 
-    def _set_default_site_root(self, environ_variable):
-        if environ_variable in os.environ:
-            self.site_root = os.environ[environ_variable]
+    def _set_site_root(self, root_option):
+        """"""
+        site_root = root_option
+
+        if site_root is None:
+            site_root = self._set_default_site_root('HANDBOOK_ROOT')
         else:
+            site_root = site_root.rstrip('/')
+            if not os.path.exists(site_root):
+                print('Error: site root path <{}> does not exist'.format(site_root))
+                sys.exit()                
+
+        return site_root
+
+    def _set_default_site_root(self, environ_variable):
+        """"""
+        if environ_variable not in os.environ:
             print('Error: Handbook root is unknown:')
             print('  Set the {} environment variable, or'.format(environ_variable))
             print('  provide value for the --root option in the command line.')
             print('  Run handbook.py -h for more details on the Environment.')
             sys.exit()
 
+        return os.environ[environ_variable]

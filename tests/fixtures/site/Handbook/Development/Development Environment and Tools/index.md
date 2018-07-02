@@ -2,7 +2,7 @@
 
 ## Contents
 
-- [Environment Setup](Handbook/Development/Development%20Environment%20and%20Tools/Environment%20Setup)
+- [Environment Setup](/Handbook/Development/Development%20Environment%20and%20Tools/Environment%20Setup)
 - Automation Scripts
 - Common File Formats
 - Time Management

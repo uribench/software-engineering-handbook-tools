@@ -2,7 +2,7 @@
 
 ## Contents
 
-- [Development](Handbook/Development)
+- [Development](/Handbook/Development)
 - Production
-- [Coding](Handbook/Coding)
+- [Coding](/Handbook/Coding)
 - Soft Skills (The Human Factor)
