@@ -9,11 +9,11 @@ import sys
 from urllib.request import pathname2url
 from jinja2 import Template
 import yaml
-from lib.command_base import CommandBase
-from lib.navigation_tree import NavigationTree
-from lib.navigation_tree_node import NavigationTreeNode
+from handbook_tools.lib.command_base import CommandBase
+from handbook_tools.lib.navigation_tree import NavigationTree
+from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
 
-__version__ = '1.1.4'
+__version__ = '1.1.6'
 
 class Build(CommandBase):
     """
@@ -24,15 +24,15 @@ class Build(CommandBase):
 
     Options:
       -h, --help        show this help message and exit
-      -v, --version     show the version and exit
+      --version         show the version and exit
       --no-stop         ignore 'stop' tags to scan the entire tree
 
     Examples:
-      handbook.py build -h
-      handbook.py build --version
-      handbook.py build
-      handbook.py --root=tests/fixtures/site build
-      handbook.py build --no-stop
+      handbook build -h
+      handbook build --version
+      handbook build
+      handbook --root=tests/fixtures/site build
+      handbook build --no-stop
     """
 
     def __init__(self, command_args=None, global_args=None):

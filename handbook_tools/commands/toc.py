@@ -7,10 +7,10 @@ This module composes a TOC for the Handbook from configuration files.
 import os
 import sys
 from urllib.request import pathname2url
-from lib.command_base import CommandBase
-from lib.navigation_tree import NavigationTree
+from handbook_tools.lib.command_base import CommandBase
+from handbook_tools.lib.navigation_tree import NavigationTree
 
-__version__ = '0.6.5'
+__version__ = '0.6.6'
 
 class Toc(CommandBase):
     """
@@ -21,7 +21,7 @@ class Toc(CommandBase):
 
     Options:
       -h, --help            show this help message and exit
-      -v, --version         show the version and exit
+      --version             show the version and exit
       -o, --output=FILE     specify output TOC file relative to site root
       -d, --depth=LEVEL     max depth of the generated TOC tree [default: 8]
       --no-stop             ignore 'stop' tags to scan the entire tree

@@ -7,7 +7,7 @@ When scanned, an external performer is executed for each visited node.
 import os
 import sys
 import yaml
-from lib.navigation_tree_node import NavigationTreeNode
+from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
 
 class NavigationTree:
     """Represents the configuration navigation tree"""

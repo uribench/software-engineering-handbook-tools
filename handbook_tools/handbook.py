@@ -6,11 +6,11 @@ Dispatcher for commands to build and maintain the Software Engineering Handbook.
 Usage:
   handbook.py [options] <command> [<args>...]
   handbook.py (-h|--help)
-  handbook.py (-v|--version)
+  handbook.py (--version)
 
 Options:
   -h, --help        show this help message and exit
-  -v, --version     show the version and exit
+  --version         show the version and exit
   --verbose         print warning messages
   --root=PATH       site root
 
@@ -18,11 +18,11 @@ Commands:
 {commands}
 
 Examples:
-  handbook.py -h
-  handbook.py some-command -h
-  handbook.py some-command --version
-  handbook.py some-command
-  handbook.py --root=tests/fixtures/site some-command
+  handbook -h
+  handbook some-command -h
+  handbook some-command --version
+  handbook some-command
+  handbook --root=tests/fixtures/site some-command
 
 Environment:
   The location of the root of the Software Engineering HandbookWhen is determined
@@ -35,16 +35,16 @@ Environment:
     export HANDBOOK_ROOT=../software-engineering-handbook
 """
 
+import os
 import sys
 import pkgutil
 from docopt import docopt
 from docopt import DocoptExit
-
-__version__ = '0.2.2'
+from handbook_tools import __version__ as VERSION
 
 def main():
     """Program entry point"""
-    commands = _load_commands('commands')
+    commands = _load_commands()
     command_name, command_args, global_args = _process_args(commands)
 
     try:
@@ -56,10 +56,12 @@ def main():
     command = command_class(command_args, global_args)
     command.execute()
 
-def _load_commands(dirname):
+def _load_commands():
     """"""
+    import handbook_tools.commands
+    commands_path = handbook_tools.commands.__path__
     commands = {}
-    for finder, name, _ in pkgutil.iter_modules([dirname]):
+    for finder, name, _ in pkgutil.iter_modules(commands_path):
         if name not in sys.modules:
             module = finder.find_module(name).load_module(name)
             commands.update({name: module})
@@ -69,7 +71,7 @@ def _load_commands(dirname):
 def _process_args(commands):
     """"""
     usage = _append_commands_and_summaries_to_usage(__doc__, commands)
-    args = docopt(usage, version=__version__, options_first=True)
+    args = docopt(usage, version=VERSION, options_first=True)
 
     command_name = args.pop('<command>')
     command_args = args.pop('<args>')
