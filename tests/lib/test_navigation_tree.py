@@ -1,7 +1,7 @@
 """Tests of the NavigationTree class"""
 
 import pytest
-from lib.navigation_tree import NavigationTree
+from handbook_tools.lib.navigation_tree import NavigationTree
 
 @pytest.fixture
 def navigation_tree():

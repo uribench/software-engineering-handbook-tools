@@ -5,10 +5,10 @@ This module generates various status reports about the Handbook.
 """
 import os
 import sys
-from lib.command_base import CommandBase
-from lib.directory_tree import DirectoryTree
+from handbook_tools.lib.command_base import CommandBase
+from handbook_tools.lib.directory_tree import DirectoryTree
 
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 class Status(CommandBase):
     """
@@ -19,7 +19,7 @@ class Status(CommandBase):
 
     Options:
       -h, --help            show this help message and exit
-      -v, --version         show the version and exit
+      --version             show the version and exit
       -o, --output=FILE     specify output report file relative to site root
 
     Examples:

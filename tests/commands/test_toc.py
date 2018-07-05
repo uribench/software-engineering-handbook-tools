@@ -1,7 +1,7 @@
 """Tests of the 'toc' sub-command of the 'handbook' command"""
 
 import pytest
-from commands.toc import Toc
+from handbook_tools.commands.toc import Toc
 
 def test_prints_toc(capsys):
     toc = Toc(global_args={'--verbose': True, 

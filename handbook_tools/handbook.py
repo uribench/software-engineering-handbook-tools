@@ -6,11 +6,11 @@ Dispatcher for commands to build and maintain the Software Engineering Handbook.
 Usage:
   handbook.py [options] <command> [<args>...]
   handbook.py (-h|--help)
-  handbook.py (-v|--version)
+  handbook.py (--version)
 
 Options:
   -h, --help        show this help message and exit
-  -v, --version     show the version and exit
+  --version         show the version and exit
   --verbose         print warning messages
   --root=PATH       site root
 
@@ -35,16 +35,17 @@ Environment:
     export HANDBOOK_ROOT=../software-engineering-handbook
 """
 
+import os
 import sys
 import pkgutil
 from docopt import docopt
 from docopt import DocoptExit
-
-__version__ = '0.2.2'
+from handbook_tools import __version__ as VERSION
 
 def main():
     """Program entry point"""
-    commands = _load_commands('commands')
+    this_dir = os.path.abspath(os.path.dirname(__file__))
+    commands = _load_commands(os.path.join(this_dir, 'commands'))
     command_name, command_args, global_args = _process_args(commands)
 
     try:
@@ -69,7 +70,7 @@ def _load_commands(dirname):
 def _process_args(commands):
     """"""
     usage = _append_commands_and_summaries_to_usage(__doc__, commands)
-    args = docopt(usage, version=__version__, options_first=True)
+    args = docopt(usage, version=VERSION, options_first=True)
 
     command_name = args.pop('<command>')
     command_args = args.pop('<args>')

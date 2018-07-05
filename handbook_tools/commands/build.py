@@ -9,11 +9,11 @@ import sys
 from urllib.request import pathname2url
 from jinja2 import Template
 import yaml
-from lib.command_base import CommandBase
-from lib.navigation_tree import NavigationTree
-from lib.navigation_tree_node import NavigationTreeNode
+from handbook_tools.lib.command_base import CommandBase
+from handbook_tools.lib.navigation_tree import NavigationTree
+from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
 
-__version__ = '1.1.4'
+__version__ = '1.1.5'
 
 class Build(CommandBase):
     """
@@ -24,7 +24,7 @@ class Build(CommandBase):
 
     Options:
       -h, --help        show this help message and exit
-      -v, --version     show the version and exit
+      --version         show the version and exit
       --no-stop         ignore 'stop' tags to scan the entire tree
 
     Examples:

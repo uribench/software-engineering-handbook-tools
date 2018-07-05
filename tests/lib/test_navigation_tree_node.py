@@ -1,7 +1,7 @@
 """Tests of the NavigationTreeNode class"""
 
 import pytest
-from lib.navigation_tree_node import NavigationTreeNode
+from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
 
 def get_id(node_name):
     return NavigationTreeNode(node_name).options['id']
