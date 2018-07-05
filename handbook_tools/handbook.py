@@ -18,11 +18,11 @@ Commands:
 {commands}
 
 Examples:
-  handbook.py -h
-  handbook.py some-command -h
-  handbook.py some-command --version
-  handbook.py some-command
-  handbook.py --root=tests/fixtures/site some-command
+  handbook -h
+  handbook some-command -h
+  handbook some-command --version
+  handbook some-command
+  handbook --root=tests/fixtures/site some-command
 
 Environment:
   The location of the root of the Software Engineering HandbookWhen is determined
@@ -44,8 +44,7 @@ from handbook_tools import __version__ as VERSION
 
 def main():
     """Program entry point"""
-    this_dir = os.path.abspath(os.path.dirname(__file__))
-    commands = _load_commands(os.path.join(this_dir, 'commands'))
+    commands = _load_commands()
     command_name, command_args, global_args = _process_args(commands)
 
     try:
@@ -57,10 +56,12 @@ def main():
     command = command_class(command_args, global_args)
     command.execute()
 
-def _load_commands(dirname):
+def _load_commands():
     """"""
+    import handbook_tools.commands
+    commands_path = handbook_tools.commands.__path__
     commands = {}
-    for finder, name, _ in pkgutil.iter_modules([dirname]):
+    for finder, name, _ in pkgutil.iter_modules(commands_path):
         if name not in sys.modules:
             module = finder.find_module(name).load_module(name)
             commands.update({name: module})

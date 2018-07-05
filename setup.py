@@ -25,8 +25,7 @@ setup(
     url='https://github.com/uribench/software-engineering-handbook-tools',
     author_email='uribench@gmail.com',
     license = 'UNLICENSE',
-    packages=['handbook_tools'],
-    # packages = find_packages(exclude=['docs', 'tests*']),
+    packages = find_packages(),
     zip_safe=False,
     extras_require = {
         'test': ['coverage', 'pytest', 'pytest-cov'],
