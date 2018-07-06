@@ -4,9 +4,9 @@
 Dispatcher for commands to build and maintain the Software Engineering Handbook.
 
 Usage:
-  handbook.py [options] <command> [<args>...]
-  handbook.py (-h|--help)
-  handbook.py (--version)
+  handbook [options] <command> [<args>...]
+  handbook (-h|--help)
+  handbook (--version)
 
 Options:
   -h, --help        show this help message and exit
@@ -25,17 +25,12 @@ Examples:
   handbook --root=tests/fixtures/site some-command
 
 Environment:
-  The location of the root of the Software Engineering HandbookWhen is determined
-  using the following process:
-    If no value is provided for the '--root' option, then the value of $HANDBOOK_ROOT
-    environment variable is used when such exists. Otherwise the program terminates and
-    the user is notified accordingly.
-  Set the $HANDBOOK_ROOT environment variable based on the structure of your file system.
-  By default, this repository uses 'direnv' configuration file (.envrc) with:
-    export HANDBOOK_ROOT=../software-engineering-handbook
+  The root of the Software Engineering Handbook is determined using the value
+  provided for the '--root' option. If not provided, then the $HANDBOOK_ROOT
+  environment variable is used when such exists. Otherwise, the program
+  terminates and the user is notified accordingly.
 """
 
-import os
 import sys
 import pkgutil
 from docopt import docopt
