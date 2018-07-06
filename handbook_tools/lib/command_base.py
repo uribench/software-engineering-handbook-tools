@@ -57,27 +57,28 @@ class CommandBase:
             site_root = site_root.rstrip('/')
             if not os.path.exists(site_root):
                 print('Error: site root path <{}> does not exist'.format(site_root))
-                sys.exit()                
+                sys.exit()
 
         return site_root
 
-    def _set_default_site_root(self, environ_variable):
+    @staticmethod
+    def _set_default_site_root(environ_variable):
         """"""
         if environ_variable not in os.environ:
             print('Error: Handbook root is unknown:')
             print('  Set the {} environment variable, or'.format(environ_variable))
             print('  provide value for the --root option in the command line.')
-            print('  Run handbook.py -h for more details on the Environment.')
+            print('  Run handbook -h for more details on the Environment.')
             sys.exit()
 
         return os.environ[environ_variable]
 
-    def _init_output_file(self):
+    def _init_output_file(self, output_filename):
         """"""
-        if self.output_filename is None:
+        if output_filename is None:
             output_file = sys.stdout
         else:
-            output_full_filename = os.path.join(self.site_root, self.output_filename)
+            output_full_filename = os.path.join(self.site_root, output_filename)
             if os.path.exists(output_full_filename):
                 print('Error: Output file already exists: {}'.format(output_full_filename))
                 sys.exit()

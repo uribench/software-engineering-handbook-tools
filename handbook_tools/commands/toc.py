@@ -10,7 +10,7 @@ from urllib.request import pathname2url
 from handbook_tools.lib.command_base import CommandBase
 from handbook_tools.lib.navigation_tree import NavigationTree
 
-__version__ = '0.6.6'
+__version__ = '0.6.7'
 
 class Toc(CommandBase):
     """
@@ -31,14 +31,14 @@ class Toc(CommandBase):
       --header              include HTML header for the TOC file
 
     Examples:
-      handbook.py toc -h
-      handbook.py toc --version
-      handbook.py toc
-      handbook.py --root=tests/fixtures/site toc
-      handbook.py toc -d 3
-      handbook.py toc --depth=3 --no-index
-      handbook.py toc --d 2 --no-index --no-link -o TOC2.md
-      handbook.py toc --no-stop -o TOC.md
+      handbook toc -h
+      handbook toc --version
+      handbook toc
+      handbook --root=tests/fixtures/site toc
+      handbook toc -d 3
+      handbook toc --depth=3 --no-index
+      handbook toc --d 2 --no-index --no-link -o toc2.md
+      handbook toc --no-stop -o toc.md
     """
 
     def __init__(self, command_args=None, global_args=None):
@@ -49,7 +49,7 @@ class Toc(CommandBase):
         self.toc_title = '# Table of Contents\n\n'
         self.markdown_ul = '-'
         self._process_args()
-        self.toc_file = self._init_output_file()
+        self.toc_file = self._init_output_file(self.output_filename)
 
         try:
             if self.include_toc_header:
@@ -66,7 +66,7 @@ class Toc(CommandBase):
         """Entry point for the execution of this sub-command"""
         self.navigation_tree = NavigationTree(self.site_root, self.verbose, self.no_stop)
         self.navigation_tree.scan(self.node_performer)
-        
+
         if self.toc_file is not sys.stdout:
             self.toc_file.close()
 

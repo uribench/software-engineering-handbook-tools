@@ -8,7 +8,7 @@ import sys
 from handbook_tools.lib.command_base import CommandBase
 from handbook_tools.lib.directory_tree import DirectoryTree
 
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 
 class Status(CommandBase):
     """
@@ -45,7 +45,7 @@ class Status(CommandBase):
         self.black_list = []
         self.report_title = '# Status Report\n'
         self._process_args()
-        self.report = self._init_output_file()
+        self.report = self._init_output_file(self.output_filename)
 
         try:
             self.report.write(self.report_title)

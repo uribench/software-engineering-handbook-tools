@@ -13,7 +13,7 @@ from handbook_tools.lib.command_base import CommandBase
 from handbook_tools.lib.navigation_tree import NavigationTree
 from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
 
-__version__ = '1.1.6'
+__version__ = '1.1.7'
 
 class Build(CommandBase):
     """
