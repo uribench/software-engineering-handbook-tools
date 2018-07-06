@@ -31,6 +31,7 @@ Environment:
   terminates and the user is notified accordingly.
 """
 
+import os
 import sys
 import pkgutil
 from docopt import docopt
@@ -39,7 +40,8 @@ from handbook_tools import __version__ as VERSION
 
 def main():
     """Program entry point"""
-    commands = _load_commands()
+    this_dir = os.path.abspath(os.path.dirname(__file__))
+    commands = _load_commands(os.path.join(this_dir, 'commands'))
     command_name, command_args, global_args = _process_args(commands)
 
     try:
@@ -51,12 +53,10 @@ def main():
     command = command_class(command_args, global_args)
     command.execute()
 
-def _load_commands():
+def _load_commands(dirname):
     """"""
-    import handbook_tools.commands
-    commands_path = handbook_tools.commands.__path__
     commands = {}
-    for finder, name, _ in pkgutil.iter_modules(commands_path):
+    for finder, name, _ in pkgutil.iter_modules([dirname]):
         if name not in sys.modules:
             module = finder.find_module(name).load_module(name)
             commands.update({name: module})
