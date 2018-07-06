@@ -47,9 +47,10 @@ class NavigationTree:
         Scan the provided navigation tree recursively.
 
         Args:
-            path (str): location for the root directory for the root node of the provided tree.
-            tree (dict of {str: str} or str): nested data structure representing the navigation
-                tree from path onward.
+            path (str): location for the root directory for the root node of the
+                provided tree.
+            tree (dict of {str: str} or str): nested data structure representing
+                the navigation tree from path onward.
                 For more information and examples see: config/navigation/README.md
         """
 
@@ -78,7 +79,8 @@ class NavigationTree:
             #   - the 'value' is a list of root's children trees
             root_node, root_children_trees = list(tree.items())[0]
         else:
-            # tree here is a string representing a 'leaf directory' (having no children):
+            # tree here is a string representing a 'leaf directory'
+            # (having no children):
             #   - root name followed by optional arguments
             root_node = tree
             root_children_trees = []
