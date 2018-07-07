@@ -51,7 +51,6 @@ repository, make changes and propose a pull request.
 Following is a partial structure of the source code files showing only the main parts:
 
 ```
-
 software-engineering-handbook-tools/    root of the repository
 |  ├──commands/                         folder of commands that are automatically discovered
 |  |  ├──build.py                       builds the Handbook from configuration
@@ -61,7 +60,6 @@ software-engineering-handbook-tools/    root of the repository
 |  └──handbook.py                       the main script
 ├──tests/                               collection of tests for the handbook tools
 └──setup.py                             package configuration file
-
 ```
 
 ### Running the Tests
@@ -83,7 +81,7 @@ This executes [pytest][2] with the [pytest-cov][3] plugin for [Coverage.py][4].
 
 ### Building the Package
 
-Make sure you have the latest versions of setuptools and wheel installed:
+Make sure you have the latest versions of setuptools and [wheel][5] installed:
 
 ```bash
 $ python3 -m pip install --user --upgrade setuptools wheel
@@ -109,8 +107,8 @@ platform so only one built distribution is needed.
 
 ### Installing the Package Locally
 
-To install the package locally from a wheel file without uploading to a remote packages repository
-such as [PyPi][5]:
+To install the package locally from a [wheel][5] file without uploading it to a remote packages 
+repository such as [PyPi][6]:
 
 ```bash
 $ pip3 install dist/<wheel-package-file>.whl
@@ -128,4 +126,5 @@ $ pip3 install dist/handbook_tools-0.3.2-py2.py3-none-any.whl
 [2]: https://docs.pytest.org/en/latest/
 [3]: https://pypi.org/project/pytest-cov/
 [4]: https://coverage.readthedocs.io/
-[5]: https://pypi.org/
+[5]: https://pypi.org/project/wheel/
+[6]: https://pypi.org/
