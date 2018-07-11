@@ -23,7 +23,7 @@ class NavigationTree:
         # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
         self.tree_config_filename = 'root.yml'
         self.node_performer = None
-        self.tree = self._load_tree_config_file()
+        self.tree = self.load_tree_config_file(self.navigation_path, self.tree_config_filename)
 
     def scan(self, node_performer):
         """Entry point for the scan of the configuration navigation tree"""
@@ -37,11 +37,9 @@ class NavigationTree:
         error_message = 'Target directory file already exists'
         HandbookValidation.validate_no_path_or_exit(tree_root_path, error_message)
 
-    def _load_tree_config_file(self):
+    def load_tree_config_file(self, path, filename):
         """Load navigation tree configuration file"""
-        tree_config_full_filename = os.path.join(self.site_root,
-                                                 *[self.navigation_path,
-                                                   self.tree_config_filename])
+        tree_config_full_filename = os.path.join(self.site_root, *[path, filename])
 
         error_message = 'Root config file does not exist'
         HandbookValidation.validate_path_or_exit(tree_config_full_filename, error_message)
