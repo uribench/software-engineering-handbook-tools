@@ -10,7 +10,7 @@ from urllib.request import pathname2url
 from handbook_tools.lib.command_base import CommandBase
 from handbook_tools.lib.navigation_tree import NavigationTree
 
-__version__ = '0.6.7'
+__version__ = '0.6.8'
 
 class Toc(CommandBase):
     """
@@ -20,15 +20,15 @@ class Toc(CommandBase):
       toc [options]
 
     Options:
-      -h, --help            show this help message and exit
-      --version             show the version and exit
-      -o, --output=FILE     specify output TOC file relative to site root
-      -d, --depth=LEVEL     max depth of the generated TOC tree [default: 8]
-      --no-stop             ignore 'stop' tags to scan the entire tree
-      --no-prefix           do not include item prefix for the TOC items
-      --no-index            do not include index numbers for the TOC items
-      --no-link             do not include links for the TOC items
-      --header              include HTML header for the TOC file
+      -h, --help            Show this help message and exit
+      --version             Show the version and exit
+      -o, --output=FILE     Specify output TOC file relative to site root
+      -d, --depth=LEVEL     Max depth of the generated TOC tree [default: 8]
+      --no-stop             Ignore 'stop' tags to scan the entire tree
+      --no-prefix           Do not include item prefix for the TOC items
+      --no-index            Do not include index numbers for the TOC items
+      --no-link             Do not include links for the TOC items
+      --header              Include HTML header for the TOC file
 
     Examples:
       handbook toc -h

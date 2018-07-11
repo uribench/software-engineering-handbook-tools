@@ -8,7 +8,7 @@ import sys
 from handbook_tools.lib.command_base import CommandBase
 from handbook_tools.lib.directory_tree import DirectoryTree
 
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 
 class Status(CommandBase):
     """
@@ -18,9 +18,9 @@ class Status(CommandBase):
       status [options]
 
     Options:
-      -h, --help            show this help message and exit
-      --version             show the version and exit
-      -o, --output=FILE     specify output report file relative to site root
+      -h, --help            Show this help message and exit
+      --version             Show the version and exit
+      -o, --output=FILE     Specify output report file relative to site root
 
     Examples:
       handbook status -h
