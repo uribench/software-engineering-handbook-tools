@@ -5,6 +5,7 @@ Base class for sub-commands of the 'handbook' command.
 import os
 import sys
 from docopt import docopt
+from handbook_tools.lib.handbook_validation import HandbookValidation
 
 class CommandBase:
     """Base class for the sub-commands of the 'handbook' command"""
@@ -29,7 +30,7 @@ class CommandBase:
         self.verbose = self.global_args['--verbose']
         self.site_root = self._set_site_root(self.global_args['--root'])
 
-        # parse the combined arguments from command's 'docstring' 
+        # parse the combined arguments from command's 'docstring'
         # and passed command_args
         self.args = docopt(self.__doc__, version=version, argv=command_args)
 
@@ -51,28 +52,26 @@ class CommandBase:
     def _set_site_root(self, root_option):
         """"""
         site_root = root_option
+        environ_variable = 'HANDBOOK_ROOT'
 
         if site_root is None:
-            site_root = self._set_default_site_root('HANDBOOK_ROOT')
-        else:
-            site_root = site_root.rstrip('/')
-            if not os.path.exists(site_root):
-                print('Error: site root path <{}> does not exist'.format(site_root))
-                sys.exit()
+            if environ_variable in os.environ:
+                site_root = os.environ[environ_variable]
+            else:
+                site_root = '.'
+
+        site_root = site_root.rstrip('/')
+        self._validate_site_root_or_exit(site_root)
 
         return site_root
 
     @staticmethod
-    def _set_default_site_root(environ_variable):
+    def _validate_site_root_or_exit(site_root):
         """"""
-        if environ_variable not in os.environ:
-            print('Error: Handbook root is unknown:')
-            print('  Set the {} environment variable, or'.format(environ_variable))
-            print('  provide value for the --root option in the command line.')
-            print('  Run handbook -h for more details on the Environment.')
-            sys.exit()
+        error_message = """Handbook root is invalid. Specify a valid location using
+                           --root option or HANDBOOK_ROOT environment variable"""
 
-        return os.environ[environ_variable]
+        HandbookValidation.validate_filesystem_or_exit(site_root, error_message)
 
     def _init_output_file(self, output_filename):
         """"""
@@ -80,9 +79,8 @@ class CommandBase:
             output_file = sys.stdout
         else:
             output_full_filename = os.path.join(self.site_root, output_filename)
-            if os.path.exists(output_full_filename):
-                print('Error: Output file already exists: {}'.format(output_full_filename))
-                sys.exit()
+            error_message = 'Output file already exists'
+            HandbookValidation.validate_no_path_or_exit(output_full_filename, error_message)
 
             output_file = open(output_full_filename, 'a')
 

@@ -5,9 +5,9 @@ When scanned, an external performer is executed for each visited node.
 """
 
 import os
-import sys
 import yaml
 from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
+from handbook_tools.lib.handbook_validation import HandbookValidation
 
 class NavigationTree:
     """Represents the configuration navigation tree"""
@@ -21,26 +21,38 @@ class NavigationTree:
         # one or more YAML navigation configuration files
         self.navigation_path = 'config/navigation/'
         # should be save as UTF-8 without BOM (i.e., Byte Order Mark)
-        self.root_config_filename = 'root.yml'
+        self.tree_config_filename = 'root.yml'
         self.node_performer = None
+        self.tree = self._load_tree_config_file()
 
     def scan(self, node_performer):
         """Entry point for the scan of the configuration navigation tree"""
-
         self.node_performer = node_performer
-        root_config_full_filename = os.path.join(self.site_root,
-                                                 *[self.navigation_path, self.root_config_filename])
+        self._scan_tree(self.site_root, self.tree)
 
-        if not os.path.exists(root_config_full_filename):
-            print('Error: root config file <{}> does not exist'.format(root_config_full_filename))
-            sys.exit()
+    def fail_on_existing_root_node_dir(self):
+        """Make sure the root node directory does not exist already"""
+        root_node, _ = self._get_root_node_and_children_trees(self.tree)
+        tree_root_path = os.path.join(self.site_root, root_node.name)
+        error_message = 'Target directory file already exists'
+        HandbookValidation.validate_no_path_or_exit(tree_root_path, error_message)
+
+    def _load_tree_config_file(self):
+        """Load navigation tree configuration file"""
+        tree_config_full_filename = os.path.join(self.site_root,
+                                                 *[self.navigation_path,
+                                                   self.tree_config_filename])
+
+        error_message = 'Root config file does not exist'
+        HandbookValidation.validate_path_or_exit(tree_config_full_filename, error_message)
 
         try:
-            with open(root_config_full_filename, 'r') as root_config_file:
-                navigation_tree = yaml.load(root_config_file)
-                self._scan_tree(self.site_root, navigation_tree)
+            with open(tree_config_full_filename, 'r') as tree_config_file:
+                navigation_tree = yaml.load(tree_config_file)
         except IOError as err:
             print('Error: operation failed: {}'.format(err.strerror))
+
+        return navigation_tree
 
     def _scan_tree(self, path, tree):
         """

@@ -2,12 +2,12 @@
 Represents a configuration navigation tree node.
 
 A configuration navigation node is composed of a node name, optionally followed
-by space-separated arguments as tags, each with the following syntax: 
+by space-separated arguments as tags, each with the following syntax:
 @<key>[=<value>]
 
 The supported keys are: 'id', 'include', and 'stop'.
 
-The NavigationTreeNode also provides a public static method 
+The NavigationTreeNode also provides a public static method
 split_node_name_and_tags() for direct use without instantiation.
 """
 

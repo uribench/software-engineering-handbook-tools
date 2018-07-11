@@ -9,10 +9,11 @@ Usage:
   handbook (--version)
 
 Options:
-  -h, --help        show this help message and exit
-  --version         show the version and exit
-  --verbose         print warning messages
-  --root=PATH       site root
+  -h, --help        Show this help message and exit
+  --version         Show the version and exit
+  --verbose         Print warning messages
+  --root=PATH       Site root. When not provided, current directory will be used.
+                    May also be specified using HANDBOOK_ROOT environment variable.
 
 Commands:
 {commands}
@@ -24,11 +25,8 @@ Examples:
   handbook some-command
   handbook --root=tests/fixtures/site some-command
 
-Environment:
-  The root of the Software Engineering Handbook is determined using the value
-  provided for the '--root' option. If not provided, then the $HANDBOOK_ROOT
-  environment variable is used when such exists. Otherwise, the program
-  terminates and the user is notified accordingly.
+Environment Variables:
+  HANDBOOK_ROOT     Optionally set this variable to define the handbook root
 """
 
 import os

@@ -62,6 +62,21 @@ software-engineering-handbook-tools/    root of the repository
 └──setup.py                             package configuration file
 ```
 
+### Executing the Source Code Directly
+
+To execute the source code directly, not using an existing package that was create from previous or
+current version of the source code, run the following command:
+
+```bash
+$ handbook_tools/handbook.py [options] <command> [<args>...]
+```
+
+Get help using:
+
+```bash
+$ handbook_tools/handbook.py -h
+```
+
 ### Running the Tests
 
 To run the tests on the cloned repository:
@@ -118,6 +133,12 @@ Example:
 
 ```bash
 $ pip3 install dist/handbook_tools-0.3.2-py2.py3-none-any.whl
+```
+
+Verify that the package has been installed successfully using:
+
+```bash
+$ pip3 list
 ```
 
 ---

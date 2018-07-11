@@ -5,7 +5,6 @@ This module builds the Handbook from configuration files.
 """
 
 import os
-import sys
 from urllib.request import pathname2url
 from jinja2 import Template
 import yaml
@@ -13,7 +12,7 @@ from handbook_tools.lib.command_base import CommandBase
 from handbook_tools.lib.navigation_tree import NavigationTree
 from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
 
-__version__ = '1.1.7'
+__version__ = '1.1.8'
 
 class Build(CommandBase):
     """
@@ -23,9 +22,9 @@ class Build(CommandBase):
       build [options]
 
     Options:
-      -h, --help        show this help message and exit
-      --version         show the version and exit
-      --no-stop         ignore 'stop' tags to scan the entire tree
+      -h, --help        Show this help message and exit
+      --version         Show the version and exit
+      --no-stop         Ignore 'stop' tags to scan the entire tree
 
     Examples:
       handbook build -h
@@ -53,27 +52,19 @@ class Build(CommandBase):
     def execute(self):
         """Entry point for the execution of this sub-command"""
         self.navigation_tree = NavigationTree(self.site_root, self.verbose, self.no_stop)
+        self.navigation_tree.fail_on_existing_root_node_dir()
         self.navigation_tree.scan(self.node_performer)
 
     def node_performer(self, root_path, root_options, root_children_nodes):
         """Custom performer executed for each visited node"""
+        os.mkdir(root_path)
         root_name = os.path.basename(root_path)
-        self._create_root_dir(root_path)
         self._create_index_file(root_path, root_options, root_name, root_children_nodes)
 
     def _process_args(self):
         """Process global_args and command_args"""
         # default values not set by docopt were set in CommandBase
         self.no_stop = self.args['--no-stop']
-
-    @staticmethod
-    def _create_root_dir(path):
-        """"""
-        if os.path.exists(path):
-            print('Error: target directory already exists: {}'.format(path))
-            sys.exit()
-
-        os.mkdir(path)
 
     def _create_index_file(self, path, options, title, children_nodes):
         """"""
