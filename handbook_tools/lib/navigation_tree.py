@@ -35,11 +35,12 @@ class NavigationTree:
         """Make sure the root node directory does not exist already"""
         root_node, _ = self._get_root_node_and_children_trees(self.tree)
         tree_root_path = os.path.join(self.site_root, root_node.name)
-        if overwrite:
-            shutil.rmtree(tree_root_path, ignore_errors=True)
-        else:
-            error_message = 'Target directory file already exists'
-            HandbookValidation.fail_on_existing_path(tree_root_path, error_message)
+
+        if not overwrite:
+            warning_message = 'Target directory already exists'
+            HandbookValidation.confirm_or_fail_on_existing_path(tree_root_path, warning_message)
+
+        shutil.rmtree(tree_root_path, ignore_errors=True)
 
     def load_tree_config_file(self, path, filename):
         """Load navigation tree configuration file"""
