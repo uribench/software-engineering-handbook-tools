@@ -19,20 +19,13 @@ class CommandBase:
         version (str): version of the subclass (i.e., concrete command)
         """
 
-        # set default values for global_args and command_args
-        if command_args is None:
-            command_args = {}
-
-        if global_args is None:
-            global_args = {}
+        # parse the combined arguments from command's 'docstring'
+        # and passed command_args
+        self.args = docopt(self.__doc__, version=version, argv=command_args)
 
         self.global_args = global_args
         self.verbose = self.global_args['--verbose']
         self.site_root = self._set_site_root(self.global_args['--root'])
-
-        # parse the combined arguments from command's 'docstring'
-        # and passed command_args
-        self.args = docopt(self.__doc__, version=version, argv=command_args)
 
     def execute(self):
         """Execute the command"""
