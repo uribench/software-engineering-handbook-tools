@@ -9,9 +9,9 @@ class HandbookValidation:
     """Validates various aspects of the handbook file system"""
 
     @staticmethod
-    def validate_path_or_exit(path, error_message):
+    def fail_on_nonexisting_path(path, error_message):
         """
-        Validate that the given path exists.
+        Validate that the given path exists, or fail.
 
         If does not exist, display the provided error_message and terminate.
         """
@@ -22,9 +22,9 @@ class HandbookValidation:
         return True
 
     @staticmethod
-    def validate_no_path_or_exit(path, error_message):
+    def fail_on_existing_path(path, error_message):
         """
-        Validate that the given path does not exist.
+        Validate that the given path does not exist, or fail.
 
         If does exist, display the provided error_message and terminate.
         """
@@ -35,14 +35,14 @@ class HandbookValidation:
         return True
 
     @classmethod
-    def validate_filesystem_or_exit(cls, path, error_message):
+    def fail_on_nonexisting_filesystem(cls, path, error_message):
         """
-        Validate that key directories of the handbook exist.
+        Validate that key directories of the handbook exist, or fail.
 
         If any does not exist, display the provided error_message and terminate.
         """
-        cls.validate_path_or_exit(os.path.join(path, 'Guides'), error_message)
-        cls.validate_path_or_exit(os.path.join(path, 'Topics'), error_message)
-        cls.validate_path_or_exit(os.path.join(path, 'config'), error_message)
+        cls.fail_on_nonexisting_path(os.path.join(path, 'Guides'), error_message)
+        cls.fail_on_nonexisting_path(os.path.join(path, 'Topics'), error_message)
+        cls.fail_on_nonexisting_path(os.path.join(path, 'config'), error_message)
 
         return True

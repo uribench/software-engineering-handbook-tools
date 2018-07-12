@@ -5,6 +5,7 @@ When scanned, an external performer is executed for each visited node.
 """
 
 import os
+import shutil
 import yaml
 from handbook_tools.lib.navigation_tree_node import NavigationTreeNode
 from handbook_tools.lib.handbook_validation import HandbookValidation
@@ -30,19 +31,22 @@ class NavigationTree:
         self.node_performer = node_performer
         self._scan_tree(self.site_root, self.tree)
 
-    def fail_on_existing_root_node_dir(self):
+    def fail_on_existing_root_node_dir(self, overwrite=False):
         """Make sure the root node directory does not exist already"""
         root_node, _ = self._get_root_node_and_children_trees(self.tree)
         tree_root_path = os.path.join(self.site_root, root_node.name)
-        error_message = 'Target directory file already exists'
-        HandbookValidation.validate_no_path_or_exit(tree_root_path, error_message)
+        if overwrite:
+            shutil.rmtree(tree_root_path, ignore_errors=True)
+        else:
+            error_message = 'Target directory file already exists'
+            HandbookValidation.fail_on_existing_path(tree_root_path, error_message)
 
     def load_tree_config_file(self, path, filename):
         """Load navigation tree configuration file"""
         tree_config_full_filename = os.path.join(self.site_root, *[path, filename])
 
         error_message = 'Root config file does not exist'
-        HandbookValidation.validate_path_or_exit(tree_config_full_filename, error_message)
+        HandbookValidation.fail_on_nonexisting_path(tree_config_full_filename, error_message)
 
         try:
             with open(tree_config_full_filename, 'r') as tree_config_file:

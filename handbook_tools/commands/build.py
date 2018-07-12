@@ -25,6 +25,7 @@ class Build(CommandBase):
       -h, --help        Show this help message and exit
       --version         Show the version and exit
       --no-stop         Ignore 'stop' tags to scan the entire tree
+      -f, --force       Overwrite existing target directory
 
     Examples:
       handbook build -h
@@ -52,7 +53,7 @@ class Build(CommandBase):
     def execute(self):
         """Entry point for the execution of this sub-command"""
         self.navigation_tree = NavigationTree(self.site_root, self.verbose, self.no_stop)
-        self.navigation_tree.fail_on_existing_root_node_dir()
+        self.navigation_tree.fail_on_existing_root_node_dir(self.force)
         self.navigation_tree.scan(self.node_performer)
 
     def node_performer(self, root_path, root_options, root_children_nodes):
@@ -62,9 +63,10 @@ class Build(CommandBase):
         self._create_index_file(root_path, root_options, root_name, root_children_nodes)
 
     def _process_args(self):
-        """Process global_args and command_args"""
+        """Process command_args"""
         # default values not set by docopt were set in CommandBase
         self.no_stop = self.args['--no-stop']
+        self.force = self.args['--force']
 
     def _create_index_file(self, path, options, title, children_nodes):
         """"""
