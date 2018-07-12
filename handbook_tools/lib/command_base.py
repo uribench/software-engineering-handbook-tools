@@ -30,9 +30,9 @@ class CommandBase:
         # and passed command_args
         self.args = docopt(self.__doc__, version=version, argv=command_args)
 
-        self.global_args = global_args
-        self.verbose = self.global_args['--verbose']
-        self.site_root = self._set_site_root(self.global_args['--root'])
+        # process global_args
+        self.verbose = global_args['--verbose']
+        self.site_root = self._set_site_root(global_args['--root'])
 
     def execute(self):
         """Execute the command"""
@@ -71,7 +71,7 @@ class CommandBase:
         error_message = """Handbook root is invalid. Specify a valid location using
                            --root option or HANDBOOK_ROOT environment variable"""
 
-        HandbookValidation.validate_filesystem_or_exit(site_root, error_message)
+        HandbookValidation.fail_on_nonexisting_filesystem(site_root, error_message)
 
     def _init_output_file(self, output_filename):
         """"""
@@ -80,7 +80,7 @@ class CommandBase:
         else:
             output_full_filename = os.path.join(self.site_root, output_filename)
             error_message = 'Output file already exists'
-            HandbookValidation.validate_no_path_or_exit(output_full_filename, error_message)
+            HandbookValidation.fail_on_existing_path(output_full_filename, error_message)
 
             output_file = open(output_full_filename, 'a')
 

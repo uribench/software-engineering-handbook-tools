@@ -81,7 +81,7 @@ class Toc(CommandBase):
             self.toc_file.write(self._format_toc(name, link))
 
     def _process_args(self):
-        """Process global_args and command_args"""
+        """Process command_args"""
         # default values not set by docopt were set in CommandBase
         self.output_filename = self.args['--output']
         self.max_depth = int(self.args['--depth'])
