@@ -18,6 +18,12 @@ class CommandBase:
         global_args (dict of {str: value}): arguments of the program
         version (str): version of the subclass (i.e., concrete command)
         """
+        # set default values for global_args and command_args
+        if command_args is None:
+            command_args = {}
+
+        if global_args is None:
+            global_args = {}
 
         # parse the combined arguments from command's 'docstring'
         # and passed command_args
