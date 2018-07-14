@@ -43,8 +43,8 @@ $ handbook -h
 
 ## Source Code
 
-If you would like to contribute changes and enhancement to the handbook tools, fork and clone this
-repository, make changes and propose a pull request.
+If you would like to contribute changes and enhancement to the handbook tools, fork this repository,
+ make changes, and propose a pull request.
 
 ### File Structure
 
@@ -52,13 +52,14 @@ Following is a partial structure of the source code files showing only the main 
 
 ```
 software-engineering-handbook-tools/    root of the repository
+├──handbook_tools/                      package source code
 |  ├──commands/                         folder of commands that are automatically discovered
 |  |  ├──build.py                       builds the Handbook from configuration
 |  |  ├──status.py                      generates various status reports about the Handbook
 |  |  └──toc.py                         composes a TOC of the Handbook from configuration
 |  ├──lib/                              common libraries
 |  └──handbook.py                       the main script
-├──tests/                               collection of tests for the handbook tools
+├──tests/                               collection of tests for the handbook tools package
 └──setup.py                             package configuration file
 ```
 
