@@ -1,0 +1,5 @@
+# files to include in the distribution built by the sdist command
+
+include LICENSE.md
+# include all files under handbook_tools directory
+graft handbook_tools
