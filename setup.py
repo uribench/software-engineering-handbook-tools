@@ -15,7 +15,7 @@ class RunTests(Command):
 
     def run(self):
         """Run all tests"""
-        errno = call(['pytest', '--cov-report=term-missing', '--cov=handbook_tools'])
+        errno = call(['pytest', '-v', '--cov-report=term-missing', '--cov=handbook_tools'])
         raise SystemExit(errno)
 
 setup(
