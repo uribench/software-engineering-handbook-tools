@@ -30,7 +30,7 @@ setup(
         'docopt==0.6.2',
         'PyYAML==3.11',
         'Jinja2==2.8',
-        'requests==2.9.1',
+        'requests>=2.20.0',
         'urllib3==1.13.1',
     ],
     zip_safe=False,
