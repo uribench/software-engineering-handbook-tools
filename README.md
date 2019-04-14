@@ -103,6 +103,8 @@ Make sure you have the latest versions of setuptools and [wheel][5] installed:
 $ python3 -m pip install --user --upgrade setuptools wheel
 ```
 
+Update the package version in `handbook_tools/__init__.py`.
+
 Now run this command from the same directory where setup.py is located:
 
 ```bash
