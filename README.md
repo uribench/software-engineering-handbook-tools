@@ -53,6 +53,7 @@ Following is a partial structure of the source code files showing only the main 
 ```
 software-engineering-handbook-tools/    root of the repository
 ├──handbook_tools/                      package source code
+|  ├──__init__.py                       package version
 |  ├──commands/                         folder of commands that are automatically discovered
 |  |  ├──build.py                       builds the Handbook from configuration
 |  |  ├──status.py                      generates various status reports about the Handbook
@@ -60,7 +61,8 @@ software-engineering-handbook-tools/    root of the repository
 |  ├──lib/                              common libraries
 |  └──handbook.py                       the main script
 ├──tests/                               collection of tests for the handbook tools package
-└──setup.py                             package configuration file
+├──requirements.txt                     package dependencies
+└──setup.py                             used by pip to install the package module
 ```
 
 ### Executing the Source Code Directly
