@@ -28,7 +28,7 @@ setup(
     packages = find_packages(exclude=['tests', 'docs']),
     install_requires=[
         'docopt==0.6.2',
-        'PyYAML==3.11',
+        'PyYAML==5.3.1',
         'Jinja2==2.8',
         'requests>=2.20.0',
         'urllib3==1.24.2',

@@ -51,7 +51,7 @@ class NavigationTree:
 
         try:
             with open(tree_config_full_filename, 'r') as tree_config_file:
-                navigation_tree = yaml.load(tree_config_file)
+                navigation_tree = yaml.load(tree_config_file, Loader=yaml.FullLoader)
         except IOError as err:
             print('Error: operation failed: {}'.format(err.strerror))
 
