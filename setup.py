@@ -25,7 +25,7 @@ setup(
     url='https://github.com/uribench/software-engineering-handbook-tools',
     author_email='uribench@gmail.com',
     license = 'UNLICENSE',
-    packages = find_packages(exclude=['tests', 'docs']),
+    packages = find_packages(exclude=['tests', 'build', 'docs']),
     install_requires=[
         'docopt==0.6.2',
         'PyYAML==5.3.1',
