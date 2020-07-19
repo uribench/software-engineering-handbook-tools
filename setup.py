@@ -31,7 +31,7 @@ setup(
         'PyYAML==3.11',
         'Jinja2==2.8',
         'requests>=2.20.0',
-        'urllib3==1.24',
+        'urllib3==1.24.2',
     ],
     zip_safe=False,
     extras_require = {
