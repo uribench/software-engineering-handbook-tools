@@ -29,7 +29,7 @@ setup(
     install_requires=[
         'docopt==0.6.2',
         'PyYAML==5.3.1',
-        'Jinja2==2.8',
+        'Jinja2==2.11.3',
         'requests>=2.20.0',
         'urllib3==1.24.2',
     ],
